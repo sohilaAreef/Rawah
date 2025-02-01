@@ -21,6 +21,7 @@ class LoginScreen extends StatelessWidget {
                 child: Image.asset(
                   'assets/images/freepik__upload__54995.png',
                   height: 150,
+                  width: double.infinity, 
                 ),
               ),
               SizedBox(height: 20),

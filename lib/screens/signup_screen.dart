@@ -19,6 +19,7 @@ class SignUpScreen extends StatelessWidget {
               Center(child: Image.asset(
                 'assets/images/flat-hand-drawn-hygge-lifestyle-illustration_23-2148827883.jpg',
                 height: 150,
+                width: double.infinity, 
               ),),
               SizedBox(height: 20,),
               Text('Sign Up', 
