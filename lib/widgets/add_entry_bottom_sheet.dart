@@ -1,101 +1,135 @@
 import 'package:flutter/material.dart';
-import 'package:rawah/models/entry.dart';
-import 'package:rawah/utils/app_colors.dart';
+import '../models/entry.dart';
+import '../utils/app_colors.dart';
 
 class AddEntryBottomSheet extends StatefulWidget {
-  final Function(Entry) onAddEntry;
+  final Function(Entry) onEntryAdded;
   final DateTime selectedDate;
+
   const AddEntryBottomSheet({
     super.key,
-     required this.onAddEntry,
-     required this.selectedDate
-     });
+    required this.onEntryAdded,
+    required this.selectedDate,
+  });
 
   @override
-  State<AddEntryBottomSheet> createState() => _AddEntryBottomSheetState();
+  _AddEntryBottomSheetState createState() => _AddEntryBottomSheetState();
 }
 
 class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
   EntryType? _selectedType;
   final TextEditingController _controller = TextEditingController();
 
-void _addEntry(){
-  if(_selectedType == null || _controller.text.trim().isEmpty){
-    final entry = Entry(
-    type: _selectedType!,
-    title: _controller.text.trim(),
-    date: widget.selectedDate,
-  );
-  widget.onAddEntry(entry);
-  Navigator.pop(context);
+  void _addEntry() {
+    if (_selectedType != null && _controller.text.trim().isNotEmpty) {
+      final entry = Entry(
+        type: _selectedType!,
+        text: _controller.text.trim(),
+        date: widget.selectedDate,
+      );
+      widget.onEntryAdded(entry);
+      Navigator.pop(context);
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      padding: const EdgeInsets.all(16.0),
-      color: Colors.white,
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white, // الخلفية بيضاء
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        boxShadow: [ // تأثير الظل لإضفاء عمق
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-         const Text(
-          'Add Entry',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-          SizedBox(height: 16),
-
+          const Text(
+            'أضف إنجازا أو امتنانا',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF6A1B9A)), // اللون البربل (الأرجواني) للعناوين
+          ),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ChoiceChip(
-                label: const Text('الإنجازات')
-                , selected: _selectedType == EntryType.achievement,
-                onSelected: (selected){
-                  setState((){
-                  _selectedType = selected? EntryType.achievement : null;
-                } );
-               },
-               selectedColor: AppColors.primary,
-               labelStyle: TextStyle(
-                color: _selectedType == EntryType.achievement ? Colors.black: Colors.grey
-               ),
-               ),
-               ChoiceChip(
-                label: const Text('الامتنان')
-                , selected: _selectedType == EntryType.gratitude,
-                onSelected: (selected){
-                  setState((){
-                  _selectedType = selected? EntryType.gratitude : null;
-                } );
-               },
-               selectedColor: AppColors.LightPurple,
-               labelStyle: TextStyle(
-                color: _selectedType == EntryType.gratitude ? Colors.black: Colors.grey
-               ),
-               ),
+                label: const Text('انجاز', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
+                selected: _selectedType == EntryType.achievement,
+                onSelected: (selected) {
+                  setState(() {
+                    _selectedType = selected ? EntryType.achievement : null;
+                  });
+                },
+                selectedColor: Color(0xFF6A1B9A), 
+                backgroundColor: Color(0xFF9C4D97), 
+                labelStyle: TextStyle(
+                  color: _selectedType == EntryType.achievement ? Colors.white : Colors.grey[700],
+                  fontWeight: FontWeight.w600,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              ChoiceChip(
+                label: const Text('امتنان', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white)),
+                selected: _selectedType == EntryType.gratitude,
+                onSelected: (selected) {
+                  setState(() {
+                    _selectedType = selected ? EntryType.gratitude : null;
+                  });
+                },
+                selectedColor: Color(0xFF6A1B9A), 
+                backgroundColor: Color(0xFF9C4D97),
+                labelStyle: TextStyle(
+                  color: _selectedType == EntryType.gratitude ? Colors.white : Colors.grey[700],
+                  fontWeight: FontWeight.w600,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextField(
             controller: _controller,
             decoration: InputDecoration(
               hintText: 'اكتب شيئا...',
               filled: true,
-              fillColor: AppColors.LightGray,
+              fillColor: AppColors.lightGray, 
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8)
-              )
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
             ),
-            maxLines: 10,
+            maxLines: 3,
           ),
-          const SizedBox(height: 16,),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.black
+          const SizedBox(height: 20),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.accent, 
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: _addEntry,
+              child: const Text(
+                'إضافة',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
             ),
-            onPressed: _addEntry,
-             child: Text('إضافة'))
+          ),
         ],
       ),
     );

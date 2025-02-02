@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rawah/utils/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -10,7 +11,7 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: AppColors.accent,
         padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),

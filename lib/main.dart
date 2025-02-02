@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:rawah/screens/achievements_screen.dart';
+import 'screens/achievements_screen.dart';
+import 'utils/app_colors.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Graduation Project',
       debugShowCheckedModeBanner: false,
-      title: 'Rawah',
+      home: const AchievementsScreen(),
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: AppColors.primary,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
+          elevation: 1,
+        ),
       ),
-      home: AchievementsScreen(), 
     );
   }
 }

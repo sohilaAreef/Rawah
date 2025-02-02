@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rawah/utils/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -19,7 +20,7 @@ class CustomTextField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(color: Colors.lightBlue)
+            borderSide: BorderSide(color: AppColors.accent)
           ),
           suffixIcon: isPassword? Icon(Icons.visibility_off) : null,
  ),

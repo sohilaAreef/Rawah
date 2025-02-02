@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rawah/utils/app_colors.dart';
 import 'package:rawah/widgets/custom_button.dart';
 import 'package:rawah/widgets/custom_text_field.dart';
 
@@ -99,7 +100,7 @@ class SignUpScreen extends StatelessWidget {
                     },
                     child: Text(
                       'login',
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: AppColors.accent),
                     ),
                    )
 

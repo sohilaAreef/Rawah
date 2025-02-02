@@ -5,12 +5,8 @@ enum EntryType {
 
 class Entry {
   final EntryType type;
-  final String title;
+  final String text;
   final DateTime date;
 
-  Entry({
-    required this.type,
-    required this.title,
-    required this.date,
-  });
+  Entry({required this.type, required this.text, required this.date});
 }
