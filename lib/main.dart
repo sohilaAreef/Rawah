@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Graduation Project',
       debugShowCheckedModeBanner: false,
-      home: const AchievementsScreen(),
+      home:  AchievementsScreen(),
       theme: ThemeData(
         primaryColor: AppColors.primary,
         scaffoldBackgroundColor: Colors.white,

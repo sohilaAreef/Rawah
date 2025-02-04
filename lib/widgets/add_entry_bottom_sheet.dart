@@ -37,12 +37,12 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white, // الخلفية بيضاء
+        color: Colors.white, 
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
-        boxShadow: [ // تأثير الظل لإضفاء عمق
+        boxShadow: [ 
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             spreadRadius: 2,
@@ -56,7 +56,7 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
         children: [
           const Text(
             'أضف إنجازا أو امتنانا',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF6A1B9A)), // اللون البربل (الأرجواني) للعناوين
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF6A1B9A)), 
           ),
           const SizedBox(height: 20),
           Row(
