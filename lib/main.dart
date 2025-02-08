@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
-import 'screens/achievements_screen.dart';
-import 'utils/app_colors.dart';
+import 'package:provider/provider.dart';  
+import 'package:rawah/logic/value_provider.dart';
+import 'package:rawah/screens/value_screen.dart';
+import 'screens/home_screen.dart';   
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ValueProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Graduation Project',
       debugShowCheckedModeBanner: false,
-      home:  AchievementsScreen(),
+      title: 'Mood Tracker',
       theme: ThemeData(
-        primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
-          elevation: 1,
-        ),
+        primarySwatch: Colors.purple,
+        fontFamily: 'Tajawal',
       ),
+      home: HomeScreen(),
     );
   }
 }

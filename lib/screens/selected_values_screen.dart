@@ -13,18 +13,26 @@ class SelectedValuesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('قيمك المختارة',
-        style: TextStyle(color: Colors.white,
-        fontSize: 20,
-        fontWeight: FontWeight.bold),),
+        toolbarHeight: 80,
+        centerTitle: false, 
+         title: const Align(
+          alignment: Alignment.centerRight,
+           child: Text("قيمك المختارة",
+           style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+           ),),),
         backgroundColor: AppColors.accent,
+        elevation: 2,
+        iconTheme: const IconThemeData(color: AppColors.secondary),
+        
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: valueProvider.selectedValues.length,
         itemBuilder: (context, index) {
-          final value = valueProvider.selectedValues[index];
-          return SelectedValueItem(value: value);
+          return SelectedValueItem(value: valueProvider.selectedValues[index]);
         },
       ),
     );

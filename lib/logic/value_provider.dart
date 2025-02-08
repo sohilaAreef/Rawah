@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:rawah/models/value_model.dart';
+import 'package:rawah/data/values_data.dart';
+import 'package:rawah/models/value_model.dart'; 
 
-class ValueProvider extends ChangeNotifier{
+class ValueProvider with ChangeNotifier {
+  List<ValueModel> selectedValues = [];
+  List <ValueModel> get values => valuesList;
 
-  List <ValueModel> selectedValues = [];
 
-  void toggleValue(ValueModel value){
-    if(selectedValues.contains(value)){
+  void toggleValue(ValueModel value) {
+    if (selectedValues.contains(value)) {
       selectedValues.remove(value);
-    }else{
-      if(selectedValues.length < 3){
+    } else {
+      if (selectedValues.length < 5) {
         selectedValues.add(value);
       }
     }
-    notifyListeners();
+    notifyListeners();  
   }
-  bool isSelected(ValueModel value){
+  bool isSelected(ValueModel value) {
     return selectedValues.contains(value);
   }
 }

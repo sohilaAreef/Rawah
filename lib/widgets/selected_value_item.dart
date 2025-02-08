@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rawah/models/value_model.dart';
+import 'package:rawah/screens/value_details_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 
 class SelectedValueItem extends StatelessWidget {
@@ -15,23 +16,36 @@ class SelectedValueItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child:
-         ListTile(
-          contentPadding: const EdgeInsets.all(12),
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage(value.image),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => ValueDetailsScreen(value: value),
+              ));
+            },
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(12),
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(value.image),
+              ),
+              title: Text(value.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(value.description,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Icon(Icons.chevron_right,
+                color: AppColors.accent,
+              ),
+            ),
           ),
-          title: Text(value.title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-          ),
-          subtitle: Text(value.description,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          ),
-          trailing: Icon( Icons.chevron_right,
-          color: AppColors.accent,),
-         )
+        )
+  
     );
   }
 }
