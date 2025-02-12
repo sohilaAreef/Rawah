@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  curved_navigation_bar: ^1.0.1
   flutter:
     sdk: flutter
 
@@ -60,6 +61,7 @@ flutter:
      - assets/images/facebook.png
      - assets/images/Apple_logo_grey.png
      - assets/images/flat-hand-drawn-hygge-lifestyle-illustration_23-2148827883.jpg
+     - assets/images/empty-box.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

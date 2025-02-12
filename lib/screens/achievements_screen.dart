@@ -113,7 +113,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> with SingleTick
                 height: 150,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 6,
+                  itemCount: 30,
                   itemBuilder: (context, index) {
                     final int day = index + 1;
                     final bool isToday = (now.day == day) &&

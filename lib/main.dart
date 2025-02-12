@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';  
 import 'package:rawah/logic/value_provider.dart';
-import 'package:rawah/screens/value_screen.dart';
-import 'screens/home_screen.dart';   
+import 'package:rawah/screens/login_screen.dart';
 
 void main() {
   runApp(
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         fontFamily: 'Tajawal',
       ),
-      home: HomeScreen(),
+      home: LoginScreen(),
     );
   }
 }

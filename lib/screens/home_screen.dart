@@ -1,7 +1,7 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rawah/logic/value_provider.dart';
-import 'package:rawah/screens/value_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 import '../screens/achievements_screen.dart';
 import '../screens/selected_values_screen.dart';
@@ -17,9 +17,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    AchievementsScreen(), // شاشة الإنجازات
-    ValuesScreen(), // شاشة القيم المختارة
-    Center(child: Text('الرئيسية')), // الشاشة الرئيسية
+    AchievementsScreen(),
+    SelectedValuesScreen(),
+    Center(child: Text('الرئيسية')),
   ];
 
   void _onItemTapped(int index) {
@@ -34,55 +34,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: _screens[_selectedIndex],
+      bottomNavigationBar: CurvedNavigationBar(
+          index: _selectedIndex,
+          height: 60,
+          color: Colors.white,
+          backgroundColor: AppColors.accent,
+          items: <Widget>[
+            Icon(Icons.emoji_events,
+                size: 30,
+                color: _selectedIndex == 0 ? AppColors.accent : Colors.grey),
 
-      bottomNavigationBar: Container(
-        margin: EdgeInsets.only(bottom: 10, left: 16, right: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
-          child: BottomAppBar(
-            shape: CircularNotchedRectangle(),
-            notchMargin: 10,
-            child: SizedBox(
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.emoji_events,
-                        color: _selectedIndex == 0
-                            ? AppColors.accent
-                            : Colors.grey), // أيقونة الإنجازات 🏆
-                    onPressed: () => _onItemTapped(0),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.format_quote,
-                        color: _selectedIndex == 1
-                            ? AppColors.accent
-                            : Colors.grey), // أيقونة القيم ❤️
-                    onPressed: () => _onItemTapped(1),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+              Icon(Icons.format_quote,
+              size: 30,
+              color: _selectedIndex == 1 ? AppColors.accent : Colors.grey,),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.accent,
-        shape: CircleBorder(),
-        onPressed: () {
-          setState(() {
-            _selectedIndex = 2;
-          });
-        },
-        child: Icon(Icons.home, color: Colors.white), // أيقونة الصفحة الرئيسية 🏠
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+              Icon(Icons.home, size: 30, color: _selectedIndex == 2 ? AppColors.accent : Colors.grey,),
+          ],
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          } ),
+          );
   }
 }

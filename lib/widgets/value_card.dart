@@ -5,14 +5,12 @@ import 'package:rawah/models/value_model.dart';
 import 'package:rawah/utils/app_colors.dart';
 
 class ValueCard extends StatelessWidget {
-
   final ValueModel value;
 
   const ValueCard({super.key, required this.value});
 
   @override
   Widget build(BuildContext context) {
-
     final valueProvider = Provider.of<ValueProvider>(context);
     final isSelected = valueProvider.isSelected(value);
 
@@ -26,7 +24,7 @@ class ValueCard extends StatelessWidget {
             width: 2,
           ),
           image: DecorationImage(
-            image: NetworkImage(value.image,),
+            image: NetworkImage(value.image),
             fit: BoxFit.cover,
             colorFilter: isSelected
                 ? ColorFilter.mode(
@@ -34,19 +32,23 @@ class ValueCard extends StatelessWidget {
                     BlendMode.darken,
                   )
                 : null,
-         ),
-      ),
-      child: Center(
-        child: Text(
-          value.title,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            backgroundColor: isSelected? AppColors.accent.withOpacity(0.5): null,
           ),
         ),
-      ),
+        child: Center(
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Text(
+              value.title,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                backgroundColor: isSelected ? AppColors.accent : null,
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ),
       ),
     );
   }

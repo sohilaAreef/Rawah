@@ -1,6 +1,4 @@
-// lib/ui/screens/values_screen.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rawah/screens/selected_values_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 import '../../data/values_data.dart';
@@ -15,18 +13,19 @@ class ValuesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         toolbarHeight: 80,
         centerTitle: false, 
          title: const Align(
           alignment: Alignment.centerRight,
            child: Text("اختر قيمك الشخصية",
            style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 24,
             fontWeight: FontWeight.bold,
            ),),),
         backgroundColor: Colors.white,
-        elevation: 2,
+        elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.secondary),
       ),
       body: valuesList.isEmpty
@@ -46,7 +45,7 @@ class ValuesScreen extends StatelessWidget {
               },
             ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.purple,
+        backgroundColor: AppColors.accent,
         child: Icon(Icons.check, color: Colors.white),
         onPressed: () {
           Navigator.push(

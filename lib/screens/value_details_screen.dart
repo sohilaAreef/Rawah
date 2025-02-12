@@ -16,7 +16,15 @@ class _ValueDetailsScreenState extends State<ValueDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.value.title,
+        title: Align(
+          alignment: Alignment.centerRight,
+          child: Text(widget.value.title,
+          textAlign: TextAlign.right,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold
+          ),
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -48,7 +56,7 @@ class _ValueDetailsScreenState extends State<ValueDetailsScreen> {
             ),
             SizedBox(height: 16),
             ...widget.value.steps.map((step) => ListTile(
-              leading: Icon(Icons.check, color: Colors.purple),
+              leading: Icon(Icons.check, color: AppColors.accent),
               title: Text(step),
             ),),
           ],),

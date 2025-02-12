@@ -15,37 +15,49 @@ class SelectedValueItem extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child:
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
                 builder: (context) => ValueDetailsScreen(value: value),
-              ));
-            },
+              ),
+            );
+          },
+          
+          child: Directionality(
+            textDirection: TextDirection.rtl,
             child: ListTile(
               contentPadding: const EdgeInsets.all(12),
+              
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(value.image),
               ),
-              title: Text(value.title,
-                style: TextStyle(
+              title: Text(
+                value.title,
+                textAlign: TextAlign.right,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              subtitle: Text(value.description,
+              subtitle: Text(
+                value.description,
+                textAlign: TextAlign.right,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              trailing: Icon(Icons.chevron_right,
+              
+              trailing: Icon(
+                Icons.chevron_right,
                 color: AppColors.accent,
               ),
             ),
           ),
-        )
-  
+        ),
+      ),
     );
   }
 }

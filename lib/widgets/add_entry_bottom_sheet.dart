@@ -56,7 +56,7 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
         children: [
           const Text(
             'أضف إنجازا أو امتنانا',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF6A1B9A)), 
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.accent), 
           ),
           const SizedBox(height: 20),
           Row(
@@ -70,8 +70,8 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
                     _selectedType = selected ? EntryType.achievement : null;
                   });
                 },
-                selectedColor: Color(0xFF6A1B9A), 
-                backgroundColor: Color(0xFF9C4D97), 
+                selectedColor: AppColors.accent, 
+                backgroundColor: Colors.grey, 
                 labelStyle: TextStyle(
                   color: _selectedType == EntryType.achievement ? Colors.white : Colors.grey[700],
                   fontWeight: FontWeight.w600,
@@ -86,8 +86,8 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
                     _selectedType = selected ? EntryType.gratitude : null;
                   });
                 },
-                selectedColor: Color(0xFF6A1B9A), 
-                backgroundColor: Color(0xFF9C4D97),
+                selectedColor: AppColors.accent, 
+                backgroundColor: Colors.grey,
                 labelStyle: TextStyle(
                   color: _selectedType == EntryType.gratitude ? Colors.white : Colors.grey[700],
                   fontWeight: FontWeight.w600,
