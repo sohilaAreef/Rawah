@@ -4,11 +4,13 @@ import 'package:rawah/utils/app_colors.dart';
 class CustomTextField extends StatelessWidget {
   final String label;
   final bool isPassword;
-  const CustomTextField({super.key, required this.label, required this.isPassword});
+  final TextEditingController? controller;
+  const CustomTextField({super.key, required this.label, required this.isPassword, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       obscureText: isPassword,
       decoration: InputDecoration(
         labelText: label,

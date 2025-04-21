@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "275916721153",
+    "project_id": "rawahapp-bc99b",
+    "storage_bucket": "rawahapp-bc99b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275916721153:android:8be84a90faad112f1e4400",
+        "android_client_info": {
+          "package_name": "com.example.rawah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275916721153-qvdsv79ol9mkailek1aafiao1gaj46fr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rawah",
+            "certificate_hash": "834e5c68cf1fb60e70e66b2a5ee10fd06847eaf5"
+          }
+        },
+        {
+          "client_id": "275916721153-86454gfb3nqbj1r3rs0oscnvtk6ue8qu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvcgyY7wPqZ2zCvGheSZ3k5QmKActUJRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275916721153-86454gfb3nqbj1r3rs0oscnvtk6ue8qu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

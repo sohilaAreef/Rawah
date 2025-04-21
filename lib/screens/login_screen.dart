@@ -1,12 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:rawah/screens/home_screen.dart';
-import 'package:rawah/screens/signup_screen.dart';
-import 'package:rawah/utils/app_colors.dart';
+import '../utils/app_colors.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _loginWithEmail() async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: widget.emailController.text.trim(),
+        password: widget.passwordController.text.trim(),
+      );
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } catch (e) {
+      print('Login Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('خطأ في تسجيل الدخول! تأكد من البيانات.')),
+      );
+    }
+  }
+
+  Future<void> _loginWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return; 
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } catch (e) {
+      print('Google login error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل تسجيل الدخول عبر Google.')),
+      );
+    }
+  }
+
+  Future<void> _loginWithApple() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
+      );
+
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      await _auth.signInWithCredential(oauthCredential);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } catch (e) {
+      print('Apple login error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل تسجيل الدخول عبر Apple.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +115,19 @@ class LoginScreen extends StatelessWidget {
                 CustomTextField(
                   label: 'البريد الإلكتروني',
                   isPassword: false,
+                  controller: widget.emailController,
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
                   label: 'كلمة المرور',
                   isPassword: true,
+                  controller: widget.passwordController,
                 ),
                 SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {}, 
                     child: Text(
                       'نسيت؟',
                       style: TextStyle(color: AppColors.accent),
@@ -63,14 +135,10 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
-                Center( 
+                Center(
                   child: CustomButton(
                     text: 'تسجيل الدخول',
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                           MaterialPageRoute(builder: (context) => HomeScreen()));
-                    },
+                    onPressed: _loginWithEmail, 
                   ),
                 ),
                 SizedBox(height: 30),
@@ -86,15 +154,12 @@ class LoginScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: _loginWithGoogle, 
                       icon: Icon(Icons.g_mobiledata, size: 36, color: Colors.red),
                     ),
+                    
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.facebook, size: 36, color: Colors.blue),
-                    ),
-                    IconButton(
-                      onPressed: () {},
+                      onPressed: _loginWithApple, 
                       icon: Icon(Icons.apple, size: 36, color: Colors.black),
                     ),
                   ],
@@ -107,10 +172,7 @@ class LoginScreen extends StatelessWidget {
                       Text(' هل أنت جديد على رواح؟ '),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SignUpScreen()),
-                          );
+                          Navigator.pushNamed(context, '/signup');
                         },
                         child: Text(
                           'إنشاء حساب',

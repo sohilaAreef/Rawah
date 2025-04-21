@@ -29,14 +29,14 @@ class _HomeScreenState extends State<HomeScreen> {
  
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _screens = [
+    final List<Widget> screens = [
       const AchievementsScreen(),
       const SelectedValuesScreen(),
       const Center(child: Text('الرئيسية', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
     ];
  
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: screens[_selectedIndex],
       bottomNavigationBar: CurvedNavigationBar(
         index: _selectedIndex,
         height: 60,

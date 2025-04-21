@@ -14,7 +14,7 @@ class AchievementsScreen extends StatefulWidget {
 class _AchievementsScreenState extends State<AchievementsScreen>
     with SingleTickerProviderStateMixin {
   // نحتفظ باليوم الحالي في _selectedDate
-  DateTime _selectedDate = DateTime.now();
+  final DateTime _selectedDate = DateTime.now();
   final List<Entry> _entries = [];
   DateTime? _highlightedDate;
 
