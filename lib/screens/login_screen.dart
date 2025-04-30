@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rawah/screens/signup_screen.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:rawah/screens/home_screen.dart';
 import '../utils/app_colors.dart';
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print('Login Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('خطأ في تسجيل الدخول! تأكد من البيانات.')),
+        SnackBar(content: Text('خطأ في تسجيل الدخول! تأكد من البيانات.', textAlign: TextAlign.right), ),
       );
     }
   }
@@ -51,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print('Google login error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('فشل تسجيل الدخول عبر Google.')),
+        SnackBar(content: Text('فشل تسجيل الدخول عبر Google.', textAlign: TextAlign.right,)),
       );
     }
   }
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print('Apple login error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('فشل تسجيل الدخول عبر Apple.')),
+        SnackBar(content: Text('فشل تسجيل الدخول عبر Apple.', textAlign: TextAlign.right,)),
       );
     }
   }
@@ -172,7 +173,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(' هل أنت جديد على رواح؟ '),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/signup');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUpScreen(),
+                            ),
+                          );
                         },
                         child: Text(
                           'إنشاء حساب',

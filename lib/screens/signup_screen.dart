@@ -31,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } catch (e) {
       print('SignUp Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('خطأ في إنشاء الحساب! تأكد من صحة البيانات.')),
+        SnackBar(content: Text('خطأ في إنشاء الحساب! تأكد من صحة البيانات.', textAlign: TextAlign.right,)),
       );
     }
   }
@@ -95,9 +95,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(height: 100),
                 Center(
                   child: Image.asset(
-                    'assets/images/freepik__upload__54995.png',
+                    'assets/images/3872886.jpg',
                     height: 150,
                     width: double.infinity,
+                    fit: BoxFit.contain,
                   ),
                 ),
                 SizedBox(height: 20),
