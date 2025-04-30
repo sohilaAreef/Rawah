@@ -60,12 +60,7 @@ flutter:
   uses-material-design: true
 
   assets:
-     - assets/images/freepik__upload__54995.png
-     - assets/images/google.png
-     - assets/images/facebook.png
-     - assets/images/Apple_logo_grey.png
-     - assets/images/flat-hand-drawn-hygge-lifestyle-illustration_23-2148827883.jpg
-     - assets/images/empty-box.png
+     - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

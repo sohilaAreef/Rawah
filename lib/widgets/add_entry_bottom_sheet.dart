@@ -23,6 +23,7 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
   void _addEntry() {
     if (_selectedType != null && _controller.text.trim().isNotEmpty) {
       final entry = Entry(
+        id: UniqueKey().toString(), 
         type: _selectedType!,
         text: _controller.text.trim(),
         date: widget.selectedDate,

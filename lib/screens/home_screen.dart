@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:rawah/screens/emoitions_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 import '../screens/achievements_screen.dart';
 import '../screens/selected_values_screen.dart';
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> screens = [
       const AchievementsScreen(),
       const SelectedValuesScreen(),
+      EmoitionsScreen(),
       const Center(child: Text('الرئيسية', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
     ];
  
@@ -54,9 +56,14 @@ class _HomeScreenState extends State<HomeScreen> {
             color: _selectedIndex == 1 ? AppColors.accent : Colors.grey,
           ),
           Icon(
-            Icons.home,
+            Icons.emoji_emotions,
             size: 30,
             color: _selectedIndex == 2 ? AppColors.accent : Colors.grey,
+          ),
+          Icon(
+            Icons.home,
+            size: 30,
+            color: _selectedIndex == 3 ? AppColors.accent : Colors.grey,
           ),
         ],
         onTap: _onItemTapped,
