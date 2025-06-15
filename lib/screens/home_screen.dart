@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> screens = [
       const AchievementsScreen(),
       const SelectedValuesScreen(),
-      EmoitionsScreen(),
+      EmotionsScreen(),
       const Center(child: Text('الرئيسية', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))),
     ];
  

@@ -36,7 +36,6 @@ class ValueCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // صورة الخلفية
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: ColorFiltered(
@@ -53,7 +52,7 @@ class ValueCard extends StatelessWidget {
               ),
             ),
             
-            // طبقة التدرج اللوني
+
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
@@ -80,7 +79,6 @@ class ValueCard extends StatelessWidget {
                 ),
               ),
             
-            // أيقونة التحديد
             if (isSelected)
               Positioned(
                 top: 12,
@@ -99,7 +97,7 @@ class ValueCard extends StatelessWidget {
                 ),
               ),
             
-            // نص القيمة
+           
             Positioned(
               bottom: 16,
               right: 16,

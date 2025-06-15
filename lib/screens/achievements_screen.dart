@@ -13,7 +13,6 @@ class AchievementsScreen extends StatefulWidget {
 
 class _AchievementsScreenState extends State<AchievementsScreen>
     with SingleTickerProviderStateMixin {
-  // نحتفظ باليوم الحالي في _selectedDate
   final DateTime _selectedDate = DateTime.now();
   final List<Entry> _entries = [];
   DateTime? _highlightedDate;
@@ -35,11 +34,10 @@ class _AchievementsScreenState extends State<AchievementsScreen>
     });
   }
 
-  // دالة لتحريك قائمة الأيام بحيث يكون اليوم الحالي (الموجود في _selectedDate) في المنتصف
   void _centerCurrentDay() {
     if (!_scrollController.hasClients) return;
-    int currentDay = _selectedDate.day; // اليوم الحالي
-    int currentIndex = currentDay - 1; // نفترض أن اليوم 1 بالفهرس 0
+    int currentDay = _selectedDate.day; 
+    int currentIndex = currentDay - 1; 
     double itemWidth = 88;
     double screenWidth = MediaQuery.of(context).size.width;
     double offset = currentIndex * itemWidth - (screenWidth / 2) + (itemWidth / 2);
@@ -51,7 +49,6 @@ class _AchievementsScreenState extends State<AchievementsScreen>
     );
   }
 
-  // عند الضغط على يوم، لا نقوم بتغيير _selectedDate (اليوم الحالي) بل نستخدم التاريخ المضغوط للـ BottomSheet
   void _onDayPressed(DateTime date) {
     if (_bottomSheetFuture != null) return;
 
@@ -78,7 +75,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: AddEntryBottomSheet(
-          selectedDate: date, // إرسال التاريخ المضغوط للـ BottomSheet
+          selectedDate: date, 
           onEntryAdded: (entry) {
             if (mounted) {
               setState(() {
@@ -105,7 +102,6 @@ class _AchievementsScreenState extends State<AchievementsScreen>
     super.dispose();
   }
 
-  // بناء قائمة الأيام بحيث يتم عرض جميع الأيام المُختارة
   Widget _buildDaysList() {
     int totalDaysInMonth =
         DateTime(_selectedDate.year, _selectedDate.month + 1, 0).day;
@@ -185,7 +181,6 @@ class _AchievementsScreenState extends State<AchievementsScreen>
     );
   }
 
-  // بناء قائمة الإدخالات (الإنجازات أو الامتنان)
   Widget _buildEntryList(List<Entry> entries) {
     if (entries.isEmpty) {
       return Center(

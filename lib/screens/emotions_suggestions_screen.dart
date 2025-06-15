@@ -73,7 +73,7 @@ class Suggestions extends StatelessWidget {
                           style: TextStyle(color: Colors.grey, fontSize: 16),
                         ),
                         SizedBox(height: 15),
-                        // الزر
+                        
                         Align(
                           alignment: Alignment.centerLeft, 
                           child: ElevatedButton(

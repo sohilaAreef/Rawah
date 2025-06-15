@@ -1,8 +1,9 @@
+
 import 'package:flutter/material.dart';
-import 'package:rawah/screens/emotions_suggestions_screen.dart';
+import 'package:rawah/screens/emotion_test_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 
-class EmoitionsScreen extends StatelessWidget {
+class EmotionsScreen extends StatelessWidget {
   final List<Map<String, String>> emotions = [
     {
       "title": "الحزن",
@@ -18,7 +19,7 @@ class EmoitionsScreen extends StatelessWidget {
     }
   ];
 
-  EmoitionsScreen({super.key});
+  EmotionsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,7 @@ class EmoitionsScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Suggestions(),
+                                builder: (context) => EmotionTestScreen(emotionTitle: emotion["title"]!),
                               ),
                             );
                           },
@@ -86,10 +87,11 @@ class EmoitionsScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
                           child: Text(
-                            "عرض الاقتراحات",
+                            "بدء الاختبار",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
