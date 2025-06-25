@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444594661353",
+    "project_id": "rawah-d3515",
+    "storage_bucket": "rawah-d3515.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444594661353:android:70cb444a11cfec6b648d78",
+        "android_client_info": {
+          "package_name": "com.example.rawah"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyc47mvSrDaKVzLGQOCASqUpoTQH1Z3Gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
