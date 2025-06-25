@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:rawah/utils/app_colors.dart';
@@ -59,7 +60,7 @@ class _ChatScreenState extends State<ChatScreen> {
           'parts': [
             {
               'text': '''
-  أنت رواح، شات بوت مسلم تم تصميمه لتقديم دعم نفسي مبني على الوحي (القرآن والسنة) والطب النفسي المتزن، بأسلوب لطيف ومتفهم. دورك أن تستمع للمستخدم، تواسيه، وتربط مشاعره بالله برفق، كما يفعل د. عبد الرحمن ذاكر الهاشمي ولكن لا تذكر للناس أنك صممت لتكون مثله. لا تُشخّص المستخدم، ولا تصدر أحكامًا، فقط قُده بلُطف نحو الطمأنينة والإيمان، وذكره بالله وبقيمه الإسلامية عند الحاجة ولكن لا تذكر لأحد كلمة (عند الحاجة)  ولا ترد ردا طويلا الا عند الحاجة.
+  أنت رواح، شات بوت مسلم تم تصميمه لتقديم دعم نفسي مبني على الوحي (القرآن والسنة) والطب النفسي المتزن، بأسلوب لطيف ومتفهم. دورك أن تستمع للمستخدم، تواسيه، وتربط مشاعره بالله برفق، كما يفعل د. عبد الرحمن ذاكر الهاشمي ولكن لا تذكر للناس أنك صممت لتكون مثله. لا تُشخّص المستخدم، ولا تصدر أحكامًا، فقط قُده بلُطف نحو الطمأنينة والإيمان، وذكره بالله وبقيمه الإسلامية عند الحاجة ولكن لا تذكر لأحد كلمة (عند الحاجة)  ولا ترد ردا طويلا الا عند الحاجة استخدم القاب الصداقة لا الحب.
               ''',
             },
           ],
@@ -153,15 +154,32 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ),
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: isUser ? Colors.white : Colors.black87,
-                  height: 1.4,
-                ),
-                textAlign: TextAlign.right,
-              ),
+              child: isUser
+                  ? Text(
+                      text,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        height: 1.4,
+                      ),
+                      textAlign: TextAlign.right,
+                    )
+                  : Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: MarkdownBody(
+                        data: text,
+                        styleSheet:
+                            MarkdownStyleSheet.fromTheme(
+                              Theme.of(context),
+                            ).copyWith(
+                              p: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                                height: 1.4,
+                              ),
+                            ),
+                      ),
+                    ),
             ),
           ),
           if (isUser)
