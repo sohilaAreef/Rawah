@@ -24,6 +24,8 @@ dependencies:
   google_fonts: ^6.2.1
   shared_preferences: ^2.5.3
   flutter_markdown: ^0.6.18
+  audioplayers: ^6.5.0
+  confetti: ^0.8.0
 
 dev_dependencies:
   flutter_test:
@@ -36,3 +38,5 @@ flutter:
     - assets/images/
     - assets/images/rawah.jpg
     - .env
+    - assets/sounds/subgoal_complete.mp3
+    - assets/sounds/goal_complete.mp3

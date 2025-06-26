@@ -71,7 +71,7 @@ class GoalProvider with ChangeNotifier {
     }
   }
 
-  Future<void> toggleSubGoal(
+  Future<Goal?> toggleSubGoal(
     String goalId,
     String subGoalId,
     bool isCompleted,
@@ -100,10 +100,12 @@ class GoalProvider with ChangeNotifier {
         updatedGoal.updateProgress();
         _goals[goalIndex] = updatedGoal;
         notifyListeners();
+        return updatedGoal;
       }
     } catch (e) {
       _error = "فشل في تحديث الهدف الفرعي: ${e.toString()}";
       notifyListeners();
     }
+    return null;
   }
 }

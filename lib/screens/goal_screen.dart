@@ -53,9 +53,9 @@ class _GoalsScreenState extends State<GoalsScreen>
                   showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
-                      title: Align(
+                      title: const Align(
                         alignment: Alignment.centerRight,
-                        child: const Text('عن الصفحة'),
+                        child: Text('عن الصفحة'),
                       ),
                       content: const Text(
                         'في هذه الصفحة يمكنك رؤية أهدافك وتتبع تقدمك فيها، سواء الأهداف النشطة أو المكتملة.',
@@ -63,9 +63,9 @@ class _GoalsScreenState extends State<GoalsScreen>
                       ),
                       actions: [
                         TextButton(
-                          child: Align(
+                          child: const Align(
                             alignment: Alignment.centerLeft,
-                            child: const Text('حسناً'),
+                            child: Text('حسناً'),
                           ),
                           onPressed: () => Navigator.of(context).pop(),
                         ),

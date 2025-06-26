@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:rawah/models/goal.dart';
 import 'package:rawah/logic/goal_provider.dart';
 import 'package:rawah/utils/app_colors.dart';
+import 'package:confetti/confetti.dart';
+import 'package:rawah/utils/app_sounds.dart';
 
 class GoalCard extends StatefulWidget {
   final Goal goal;
@@ -16,6 +18,115 @@ class GoalCard extends StatefulWidget {
 
 class _GoalCardState extends State<GoalCard> {
   bool _expanded = false;
+  late ConfettiController _confettiController;
+  Goal? _previousGoal;
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 5),
+    );
+    _previousGoal = widget.goal;
+  }
+
+  @override
+  void didUpdateWidget(GoalCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (_previousGoal != null &&
+        _previousGoal!.progress < 100 &&
+        widget.goal.progress >= 100) {
+      _celebrateMainGoal();
+    }
+    _previousGoal = widget.goal;
+  }
+
+  void _celebrateMainGoal() {
+    AppSounds.playGoalComplete();
+    _confettiController.play();
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return const SizedBox.shrink(); // مطلوب عشان showGeneralDialog
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return Transform.scale(
+          scale: animation.value,
+          child: Opacity(
+            opacity: animation.value,
+            child: Center(
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.emoji_events,
+                        color: Colors.amber,
+                        size: 60,
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'أحسنت! 🎉',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'لقد أكملت الهدف "${widget.goal.title}" بنجاح 💪',
+                        style: const TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('رائع!'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,43 +226,159 @@ class _GoalCardState extends State<GoalCard> {
             ),
           ),
           const SizedBox(height: 8),
-          ...widget.goal.subGoals.map((subGoal) {
-            return Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.yellow),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.only(bottom: 8),
-              child: CheckboxListTile(
-                title: Text(
-                  subGoal.title,
-                  style: TextStyle(
-                    color: subGoal.isCompleted
-                        ? Colors.greenAccent
-                        : Colors.white,
-                    decoration: subGoal.isCompleted
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
+          ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            shouldLoop: false,
+            colors: const [
+              Colors.green,
+              Colors.blue,
+              Colors.pink,
+              Colors.orange,
+              Colors.purple,
+            ],
+            child: Column(
+              children: widget.goal.subGoals.map((subGoal) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.yellow),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  textAlign: TextAlign.right,
-                ),
-                secondary: subGoal.dueDate != null
-                    ? Text(
-                        '${subGoal.dueDate!.day}/${subGoal.dueDate!.month}',
-                        style: const TextStyle(color: Colors.white70),
-                      )
-                    : null,
-                value: subGoal.isCompleted,
-                onChanged: (value) {
-                  if (value != null) {
-                    provider.toggleSubGoal(widget.goal.id, subGoal.id, value);
-                  }
-                },
-                activeColor: AppColors.accent,
-                contentPadding: EdgeInsets.zero,
-              ),
-            );
-          }),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: CheckboxListTile(
+                    title: Text(
+                      subGoal.title,
+                      style: TextStyle(
+                        color: subGoal.isCompleted
+                            ? Colors.greenAccent
+                            : Colors.white,
+                        decoration: subGoal.isCompleted
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                    secondary: subGoal.dueDate != null
+                        ? Text(
+                            '${subGoal.dueDate!.day}/${subGoal.dueDate!.month}',
+                            style: const TextStyle(color: Colors.white70),
+                          )
+                        : null,
+                    value: subGoal.isCompleted,
+                    onChanged: (value) async {
+                      if (value != null) {
+                        final updatedGoal = await provider.toggleSubGoal(
+                          widget.goal.id,
+                          subGoal.id,
+                          value,
+                        );
+
+                        if (value && updatedGoal != null) {
+                          AppSounds.playSubGoalComplete();
+
+                          showGeneralDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            barrierLabel: '',
+                            transitionDuration: const Duration(
+                              milliseconds: 400,
+                            ),
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) {
+                                  return const SizedBox.shrink();
+                                },
+                            transitionBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  return Transform.scale(
+                                    scale: animation.value,
+                                    child: Opacity(
+                                      opacity: animation.value,
+                                      child: Center(
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(24),
+                                            margin: const EdgeInsets.symmetric(
+                                              horizontal: 24,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black26,
+                                                  blurRadius: 20,
+                                                  offset: const Offset(0, 10),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(
+                                                  Icons.check_circle,
+                                                  color: Colors.green,
+                                                  size: 60,
+                                                ),
+                                                const SizedBox(height: 12),
+                                                const Text(
+                                                  'أحسنت! 💚',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.teal,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  'لقد أنجزت "${subGoal.title}" بنجاح 🎯',
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                const SizedBox(height: 16),
+                                                ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.teal,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: const Text('رائع!'),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                          );
+                        }
+                      }
+                    },
+                    activeColor: AppColors.accent,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ),
     );

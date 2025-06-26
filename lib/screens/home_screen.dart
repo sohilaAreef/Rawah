@@ -6,7 +6,6 @@ import 'package:rawah/screens/goal_screen.dart';
 import 'package:rawah/screens/main_home_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 import '../screens/achievements_screen.dart';
-import '../screens/selected_values_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final int initialIndex;
