@@ -19,7 +19,6 @@ class GoalCard extends StatefulWidget {
 class _GoalCardState extends State<GoalCard> {
   bool _expanded = false;
   late ConfettiController _confettiController;
-  Goal? _previousGoal;
 
   @override
   void initState() {
@@ -27,34 +26,22 @@ class _GoalCardState extends State<GoalCard> {
     _confettiController = ConfettiController(
       duration: const Duration(seconds: 5),
     );
-    _previousGoal = widget.goal;
   }
 
   @override
-  void didUpdateWidget(GoalCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_previousGoal != null &&
-        _previousGoal!.progress < 100 &&
-        widget.goal.progress >= 100) {
-      _celebrateMainGoal();
-    }
-    _previousGoal = widget.goal;
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
-  void _celebrateMainGoal() {
-    AppSounds.playGoalComplete();
-    _confettiController.play();
-
+  void _showGoalCompletedDialog(String title) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: '',
       transitionDuration: const Duration(milliseconds: 400),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return const SizedBox.shrink(); // مطلوب عشان showGeneralDialog
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
+      pageBuilder: (_, __, ___) => const SizedBox.shrink(),
+      transitionBuilder: (context, animation, _, __) {
         return Transform.scale(
           scale: animation.value,
           child: Opacity(
@@ -96,7 +83,7 @@ class _GoalCardState extends State<GoalCard> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'لقد أكملت الهدف "${widget.goal.title}" بنجاح 💪',
+                        'لقد أكملت الهدف "$title" بنجاح 💪',
                         style: const TextStyle(fontSize: 16),
                         textAlign: TextAlign.center,
                       ),
@@ -120,12 +107,6 @@ class _GoalCardState extends State<GoalCard> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    _confettiController.dispose();
-    super.dispose();
   }
 
   @override
@@ -267,111 +248,48 @@ class _GoalCardState extends State<GoalCard> {
                     value: subGoal.isCompleted,
                     onChanged: (value) async {
                       if (value != null) {
+                        final wasCompleted = subGoal.isCompleted; // قبل التحديث
+
                         final updatedGoal = await provider.toggleSubGoal(
                           widget.goal.id,
                           subGoal.id,
                           value,
                         );
 
-                        if (value && updatedGoal != null) {
-                          AppSounds.playSubGoalComplete();
+                        // لو المستخدم عمل check ولسه مكنش مكمّل
+                        if (value && !wasCompleted && updatedGoal != null) {
+                          if (updatedGoal.progress >= 100) {
+                            AppSounds.playGoalComplete();
+                            _confettiController.play();
+                            _showGoalCompletedDialog(updatedGoal.title);
+                          } else {
+                            AppSounds.playSubGoalComplete();
 
-                          showGeneralDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            barrierLabel: '',
-                            transitionDuration: const Duration(
-                              milliseconds: 400,
-                            ),
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) {
-                                  return const SizedBox.shrink();
-                                },
-                            transitionBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  return Transform.scale(
-                                    scale: animation.value,
-                                    child: Opacity(
-                                      opacity: animation.value,
-                                      child: Center(
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(24),
-                                            margin: const EdgeInsets.symmetric(
-                                              horizontal: 24,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(24),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black26,
-                                                  blurRadius: 20,
-                                                  offset: const Offset(0, 10),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Icon(
-                                                  Icons.check_circle,
-                                                  color: Colors.green,
-                                                  size: 60,
-                                                ),
-                                                const SizedBox(height: 12),
-                                                const Text(
-                                                  'أحسنت! 💚',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.teal,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  'لقد أنجزت "${subGoal.title}" بنجاح 🎯',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                const SizedBox(height: 16),
-                                                ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.teal,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            20,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  onPressed: () =>
-                                                      Navigator.pop(context),
-                                                  child: const Text('رائع!'),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                          );
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text(
+                                  'أحسنت! 💚',
+                                  textAlign: TextAlign.center,
+                                ),
+                                content: Text(
+                                  'لقد أنجزت "${subGoal.title}" بنجاح 🎯',
+                                  textAlign: TextAlign.center,
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: const Text('رائع!'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         }
                       }
                     },
+
                     activeColor: AppColors.accent,
                     contentPadding: EdgeInsets.zero,
                   ),
