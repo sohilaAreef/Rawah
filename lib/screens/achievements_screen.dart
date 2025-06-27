@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rawah/models/entry.dart';
 import 'package:rawah/services/entry_service.dart';
 import 'package:rawah/utils/app_colors.dart';
+import 'package:rawah/utils/app_sounds.dart';
 import 'package:rawah/widgets/add_entry_bottom_sheet.dart';
 
 class AchievementsScreen extends StatefulWidget {
@@ -167,7 +168,28 @@ class _AchievementsScreenState extends State<AchievementsScreen>
       context: context,
       isScrollControlled: true,
       builder: (context) => AddEntryBottomSheet(
-        onEntryAdded: (entry) => _entryService.addEntry(entry),
+        onEntryAdded: (entry) {
+          _entryService.addEntry(entry);
+
+          AppSounds.playSubGoalComplete();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'هذا رائع! تمت إضافة ${entry.type == EntryType.achievement ? "إنجاز" : "امتنان"} 💛 جديد بنجاح  ',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              backgroundColor: AppColors.accent,
+              duration: const Duration(seconds: 3),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              margin: const EdgeInsets.all(20),
+            ),
+          );
+        },
       ),
     );
   }

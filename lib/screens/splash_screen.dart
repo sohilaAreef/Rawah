@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rawah/utils/app_colors.dart';
 import 'package:video_player/video_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';

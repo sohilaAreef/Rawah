@@ -49,4 +49,4 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/rawah_logo.jpg"
+  image_path: "assets/images/rawah_logo.png"

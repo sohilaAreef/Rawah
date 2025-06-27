@@ -16,26 +16,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> onboardingData = [
     {
-      'image': 'assets/images/intro1.png',
+      'image': 'assets/images/peace.png',
       'title': 'مرحبًا بك في رواح',
       'heading': 'استكشف ذاتك وارتقِ بنفسك.',
       'description':
           'رواح يساعدك على فهم مشاعرك، تعزيز قيمك، وتحقيق التوازن في حياتك.',
     },
     {
-      'image': 'assets/images/intro2.png',
+      'image': 'assets/images/emotions.png',
       'title': 'تتبع مشاعرك وسلوكياتك',
       'heading': 'وعي أكبر بذاتك.',
       'description': 'سجّل مشاعرك يوميًا واكتشف كيف تؤثر على حياتك وسلوكياتك.',
     },
     {
-      'image': 'assets/images/intro3.png',
+      'image': 'assets/images/goals.png',
       'title': 'ضع أهدافك وحققها',
       'heading': 'أهداف صغيرة... إنجازات كبيرة.',
       'description': 'حدّد أهدافًا قابلة للتحقيق وتابع تقدمك بخطوات بسيطة.',
     },
     {
-      'image': 'assets/images/intro4.png',
+      'image': 'assets/images/values.png',
       'title': 'عزز قيمك بالحياة اليومية',
       'heading': 'قوّي قيمك بالأفعال.',
       'description':
@@ -46,7 +46,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _navigateToLogin() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('seenOnboarding', true);
-
     Navigator.of(
       context,
     ).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -55,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 243, 242, 242),
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -67,18 +66,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   setState(() => _currentPage = index);
                 },
                 itemBuilder: (context, index) {
+                  final item = onboardingData[index];
                   return Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(24),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          onboardingData[index]['image']!,
-                          height: 200,
-                        ),
+                        Image.asset(item['image']!, height: 220),
                         const SizedBox(height: 30),
                         Text(
-                          onboardingData[index]['title']!,
+                          item['title']!,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -86,22 +83,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
                         Text(
-                          onboardingData[index]['heading']!,
-                          style: TextStyle(
+                          item['heading']!,
+                          style: const TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             color: AppColors.accent,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 15),
                         Text(
-                          onboardingData[index]['description']!,
+                          item['description']!,
                           style: const TextStyle(
                             fontSize: 16,
-                            color: AppColors.textPrimary,
+                            color: Colors.black87,
+                            height: 1.5,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -118,7 +116,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 (index) => AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentPage == index ? 20 : 8,
+                  width: _currentPage == index ? 24 : 8,
                   height: 8,
                   decoration: BoxDecoration(
                     color: _currentPage == index
@@ -139,14 +137,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   } else {
                     _controller.nextPage(
                       duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeIn,
+                      curve: Curves.easeInOut,
                     );
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
                   backgroundColor: AppColors.accent,
                   foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: Text(
                   _currentPage == onboardingData.length - 1
@@ -156,7 +157,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
           ],
         ),
       ),

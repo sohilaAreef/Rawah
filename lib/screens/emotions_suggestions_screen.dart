@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rawah/utils/app_colors.dart';
+import 'package:rawah/utils/app_sounds.dart';
 
 class Suggestions extends StatelessWidget {
   final String emotionTitle;
@@ -227,13 +228,26 @@ class Suggestions extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        AppSounds.playSubGoalComplete();
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text("جميل! تم تطبيق الاقتراح ✅"),
+                            content: Text(
+                              "👏أحسنت! تطبيق الاقتراح خطوة جميلة ",
+                              textDirection: TextDirection.rtl,
+                            ),
                             backgroundColor: AppColors.accent,
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(seconds: 3),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12),
+                              ),
+                            ),
                           ),
                         );
                       },
+
                       icon: const Icon(Icons.check_circle_outline),
                       label: const Text("تم"),
                       style: ElevatedButton.styleFrom(

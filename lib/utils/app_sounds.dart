@@ -24,12 +24,7 @@ class AppSounds {
 
   static Future<void> initForWeb() async {
     if (kIsWeb) {
-      await _player.setAudioContext(
-        AudioContext(
-          // Use default values or specify parameters as supported by the package version
-          // For web, AudioContext has a 'config' parameter in some versions, or just use the default constructor
-        ),
-      );
+      await _player.setAudioContext(AudioContext());
     }
   }
 }

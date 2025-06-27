@@ -298,11 +298,11 @@ class _GoalCardState extends State<GoalCard> {
                               context: context,
                               builder: (_) => AlertDialog(
                                 title: const Text(
-                                  ' 💚أحسنت! ',
+                                  ' 💚أحسنت ',
                                   textAlign: TextAlign.center,
                                 ),
                                 content: Text(
-                                  'لقد أنجزت "${subGoal.title}" بنجاح 🎯',
+                                  '🎯لقد أنجزت "${subGoal.title}" بنجاح ',
                                   textAlign: TextAlign.center,
                                 ),
                                 actions: [
