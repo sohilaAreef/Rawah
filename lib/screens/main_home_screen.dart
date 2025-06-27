@@ -1,344 +1,304 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:rawah/screens/achievements_screen.dart';
 import 'package:rawah/screens/chat_screen.dart';
 import 'package:rawah/screens/emotions_home_screen.dart';
 import 'package:rawah/screens/goal_screen.dart';
+import 'package:rawah/screens/login_screen.dart';
+import 'package:rawah/screens/profile_screen.dart';
 import 'package:rawah/screens/selected_values_screen.dart';
 import 'package:rawah/screens/settings_screen.dart';
-import 'package:rawah/screens/profile_screen.dart';
-import 'package:rawah/screens/login_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
-import 'package:rawah/services/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MainHomeScreen extends StatelessWidget {
+class MainHomeScreen extends StatefulWidget {
   const MainHomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<MainHomeScreen> createState() => _MainHomeScreenState();
+}
+
+class _MainHomeScreenState extends State<MainHomeScreen> {
+  String firstName = '';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
     final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 40,
-        ),
-        drawer: Drawer(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.white,
-                  AppColors.goldenAccent.withOpacity(0.6),
-                  AppColors.accent.withOpacity(0.8),
-                ],
-              ),
-            ),
-            child: Column(
-              children: [
-                StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(user?.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    final imageUrl = snapshot.data?['imageUrl'];
-                    final userName = snapshot.data?['name'] ?? 'المستخدم';
+      if (doc.exists) {
+        final data = doc.data()!;
+        setState(() {
+          firstName = data['firstName'] ?? '';
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
-                    return Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(
-                        top: 50,
-                        bottom: 20,
-                        left: 20,
-                        right: 20,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.accent.withOpacity(0.2),
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColors.accent,
-                                width: 3,
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              radius: 40,
-                              backgroundImage: imageUrl != null
-                                  ? NetworkImage(imageUrl)
-                                  : null,
-                              backgroundColor: AppColors.accent.withOpacity(
-                                0.2,
-                              ),
-                              child: imageUrl == null
-                                  ? const Icon(
-                                      Icons.person,
-                                      size: 40,
-                                      color: AppColors.accent,
-                                    )
-                                  : null,
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          Text(
-                            'أهلًا $userName في رواح ✨',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.accent,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 30),
-
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    children: [
-                      _buildDrawerItem(
-                        icon: Icons.person,
-                        text: 'الملف الشخصي',
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: AppColors.accent),
+          ),
+          drawer: Drawer(
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.only(top: 60, right: 20, left: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const SizedBox(height: 40),
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                      leading: const Icon(
+                        Icons.person,
                         color: AppColors.accent,
-                        onTap: () => Navigator.push(
+                      ),
+                      title: const Text(
+                        'الملف الشخصي',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.accent,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                      onTap: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => const ProfileScreen(),
                           ),
-                        ),
-                      ),
-                      _buildDrawerItem(
-                        icon: Icons.settings,
-                        text: 'الإعدادات',
+                        );
+                      },
+                    ),
+
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                      leading: const Icon(
+                        Icons.settings,
                         color: AppColors.accent,
-                        onTap: () => Navigator.push(
+                      ),
+                      title: const Text(
+                        'الإعدادات',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.accent,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                      onTap: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => const SettingsScreen(),
                           ),
+                        );
+                      },
+                    ),
+
+                    const Divider(height: 40, color: Colors.grey),
+
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                      leading: const Icon(Icons.logout, color: Colors.red),
+                      title: const Text(
+                        'تسجيل الخروج',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
                         ),
+                        textAlign: TextAlign.right,
                       ),
-                      _buildDrawerItem(
-                        icon: Icons.format_quote,
-                        text: 'القيم',
-                        color: AppColors.accent,
-                        onTap: () => Navigator.push(
+                      onTap: () async {
+                        Navigator.pop(context);
+
+                        await FirebaseAuth.instance.signOut();
+
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const SelectedValuesScreen(),
+                            builder: (_) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 30,
+                            horizontal: 20,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  firstName.isNotEmpty
+                                      ? '🌟 مرحبًا بك $firstName في رواح'
+                                      : '🌟 مرحبًا بك في رواح',
+                                  textAlign: TextAlign.right,
+                                  style: const TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  'اختر ما يناسبك حسب حالتك النفسية✨ ',
+                                  textAlign: TextAlign.right,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      const Divider(color: AppColors.accent, height: 30),
-                      _buildDrawerItem(
-                        icon: Icons.exit_to_app,
-                        text: 'تسجيل الخروج',
-                        color: Colors.red,
-                        onTap: () => AuthService().signOut().then((_) {
-                          Navigator.pushReplacement(
+                        const SizedBox(height: 30),
+
+                        _buildSectionTitle(
+                          'الرفاه النفسي',
+                          'ساعد نفسك على تخطي المشاعر السلبية وتعزيز الإيجابية',
+                        ),
+                        _buildGrid(context, [
+                          _buildCard(
                             context,
-                            MaterialPageRoute(builder: (_) => LoginScreen()),
-                          );
-                        }),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 30,
-                    horizontal: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.accent,
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.accent.withOpacity(0.3),
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          '🌟 مرحبًا بك في رواح',
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            title: 'المشاعر',
+                            icon: Icons.emoji_emotions,
+                            color: Colors.blue,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const EmotionsHomeScreen(),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'اختر ما يناسبك حسب حالتك النفسية✨ ',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
+                          _buildCard(
+                            context,
+                            title: 'القيم',
+                            icon: Icons.format_quote,
+                            color: Colors.green,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const SelectedValuesScreen(),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30),
-                _buildSectionTitle(
-                  'الرفاه النفسي',
-                  'ساعد نفسك على تخطي المشاعر السلبية وتعزيز الإيجابية',
-                ),
-                _buildGrid(context, [
-                  _buildCard(
-                    context,
-                    title: 'المشاعر',
-                    icon: Icons.emoji_emotions,
-                    color: Colors.blue,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const EmotionsHomeScreen(),
-                      ),
-                    ),
-                  ),
-                  _buildCard(
-                    context,
-                    title: 'القيم',
-                    icon: Icons.format_quote,
-                    color: Colors.green,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const SelectedValuesScreen(),
-                      ),
-                    ),
-                  ),
-                ]),
-                const SizedBox(height: 30),
-                _buildSectionTitle(
-                  'الإنجاز والشكر',
-                  'سجّل إنجازاتك واحتفل بنفسك',
-                ),
-                _buildGrid(context, [
-                  _buildCard(
-                    context,
-                    title: 'الإنجازات',
-                    icon: Icons.emoji_events,
-                    color: Colors.orange,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AchievementsScreen(),
-                      ),
-                    ),
-                  ),
-                  _buildCard(
-                    context,
-                    title: 'الأهداف',
-                    icon: Icons.flag,
-                    color: Colors.purple,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const GoalsScreen()),
-                    ),
-                  ),
-                ]),
-                const SizedBox(height: 30),
-                _buildSectionTitle(
-                  'الدعم النفسي',
-                  'تحدث إلى رواح، صديقك الداعم دائمًا',
-                ),
-                _buildGrid(context, [
-                  _buildCard(
-                    context,
-                    title: 'محادثة مع رواح',
-                    icon: Icons.chat,
-                    color: AppColors.accent,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ChatScreen()),
-                    ),
-                  ),
-                ]),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+                        ]),
+                        const SizedBox(height: 30),
 
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String text,
-    required VoidCallback onTap,
-    required Color color,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
-        ],
-      ),
-      child: ListTile(
-        leading: Icon(icon, color: color),
-        title: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            color: color,
-            fontWeight: FontWeight.bold,
+                        _buildSectionTitle(
+                          'الإنجاز والشكر',
+                          'سجّل إنجازاتك واحتفل بنفسك',
+                        ),
+                        _buildGrid(context, [
+                          _buildCard(
+                            context,
+                            title: 'الإنجازات',
+                            icon: Icons.emoji_events,
+                            color: Colors.orange,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AchievementsScreen(),
+                              ),
+                            ),
+                          ),
+                          _buildCard(
+                            context,
+                            title: 'الأهداف',
+                            icon: Icons.flag,
+                            color: Colors.purple,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const GoalsScreen(),
+                              ),
+                            ),
+                          ),
+                        ]),
+                        const SizedBox(height: 30),
+
+                        // Section 3: الدعم النفسي
+                        _buildSectionTitle(
+                          'الدعم النفسي',
+                          'تحدث إلى رواح، صديقك الداعم دائمًا',
+                        ),
+                        _buildGrid(context, [
+                          _buildCard(
+                            context,
+                            title: 'محادثة مع رواح',
+                            icon: Icons.chat,
+                            color: AppColors.accent,
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const ChatScreen(),
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ),
           ),
         ),
-        onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -351,6 +311,7 @@ class MainHomeScreen extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Text(
             title,
+            textAlign: TextAlign.right,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -363,6 +324,7 @@ class MainHomeScreen extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Text(
             subtitle,
+            textAlign: TextAlign.right,
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ),
@@ -401,13 +363,6 @@ class MainHomeScreen extends StatelessWidget {
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: color.withOpacity(0.4)),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.1),
-                blurRadius: 6,
-                spreadRadius: 1,
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -421,6 +376,7 @@ class MainHomeScreen extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: Text(
                   title,
+                  textAlign: TextAlign.right,
                   style: TextStyle(
                     fontSize: 16,
                     color: color,

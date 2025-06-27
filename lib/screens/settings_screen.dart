@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:rawah/screens/profile_screen.dart';
 import 'package:rawah/screens/login_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
@@ -42,6 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 MaterialPageRoute(builder: (_) => const ProfileScreen()),
               ),
             ),
+
             _buildSection('المزيد'),
             _buildSettingItem(
               icon: Icons.info_outline,
@@ -53,6 +57,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: 'تسجيل الخروج',
               color: Colors.red,
               onTap: () => _showLogoutConfirmation(context),
+            ),
+            _buildSettingItem(
+              icon: Icons.delete_forever,
+              title: 'حذف الحساب',
+              color: Colors.red,
+              onTap: () => _showDeleteAccountConfirmation(context),
             ),
           ],
         ),
@@ -115,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: AlertDialog(
-            backgroundColor: AppColors.goldenAccent.withOpacity(0.2),
+            backgroundColor: const Color.fromARGB(255, 245, 223, 156),
             title: const Text(
               'عن التطبيق',
               textAlign: TextAlign.center,
@@ -131,7 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'طبيق رواح هو تطبيق دعم نفسي ذاتي يساعد المستخدم على متابعة حالته المزاجية يوميًا، وتسجيل القيم التي يعيش بها، كما يوفّر اقتراحات لأنشطة تعزز المشاعر الإيجابية وتساعده في التعامل مع المشاعر السلبية. يتيح للمستخدم تتبُّع إنجازاته وأهدافه، وتوثيق مشاعره وتجربته، بالإضافة إلى إمكانية التحدّث مع شات بوت صديق اسمه "رواح"، يقدم الدعم من منظور نفسي وروحي مستوحى من الوحي.',
+                    '  رواح هو تطبيق دعم نفسي ذاتي يساعد المستخدم على متابعة حالته المزاجية يوميًا، وتسجيل القيم التي يعيش بها، كما يوفّر اقتراحات لأنشطة تعزز المشاعر الإيجابية وتساعده في التعامل مع المشاعر السلبية. يتيح للمستخدم تتبُّع إنجازاته وأهدافه، وتوثيق مشاعره وتجربته، بالإضافة إلى إمكانية التحدّث مع شات بوت صديق اسمه "رواح"، يقدم الدعم من منظور نفسي وروحي مستوحى من الوحي.',
                     textAlign: TextAlign.right,
                     style: TextStyle(fontSize: 16),
                   ),
@@ -211,7 +221,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return Directionality(
           textDirection: TextDirection.rtl,
           child: AlertDialog(
-            backgroundColor: AppColors.goldenAccent.withOpacity(0.2),
+            backgroundColor: const Color.fromARGB(255, 245, 223, 156),
             title: const Text(
               'تأكيد تسجيل الخروج',
               textAlign: TextAlign.center,
@@ -285,5 +295,124 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       },
     );
+  }
+
+  void _showDeleteAccountConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            backgroundColor: const Color.fromARGB(255, 245, 223, 156),
+            title: const Text(
+              'حذف الحساب',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            content: const Text(
+              'هل أنت متأكد أنك تريد حذف حسابك بشكل دائم؟\n\nهذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع بياناتك.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[300],
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'إلغاء',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _deleteAccount(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'حذف',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteAccount(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .delete();
+
+      if (user.photoURL != null) {
+        try {
+          await FirebaseStorage.instance.refFromURL(user.photoURL!).delete();
+        } catch (e) {
+          print('Error deleting profile image: $e');
+        }
+      }
+
+      await user.delete();
+
+      await FirebaseAuth.instance.signOut();
+
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+        (Route<dynamic> route) => false,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('تم حذف حسابك بنجاح'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('فشل في حذف الحساب: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      Navigator.of(context).pop();
+    }
   }
 }

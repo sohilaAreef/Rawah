@@ -29,6 +29,8 @@ dependencies:
   image_picker: ^1.1.2
   firebase_storage: ^12.4.7
   video_player: ^2.10.0
+  shimmer: ^3.0.0
+  timezone: ^0.10.1
 
 dev_dependencies:
   flutter_test:
@@ -49,4 +51,4 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/rawah_logo.png"
+  image_path: "assets/images/hello.png"

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart'; // أضف هذا الاستيراد
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,12 +18,24 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isSending = false;
+  final User? _currentUser =
+      FirebaseAuth.instance.currentUser; // احصل على المستخدم الحالي
+
+  // دالة لإنشاء مسار المجموعة الخاص بالمستخدم
+  CollectionReference get _messagesCollection {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_currentUser!.uid)
+        .collection('messages');
+  }
 
   Future<void> sendMessage(String message) async {
-    if (message.isEmpty) return;
+    if (message.isEmpty || _currentUser == null) return;
 
     setState(() => _isSending = true);
-    await FirebaseFirestore.instance.collection('messages').add({
+
+    // أرسل الرسالة إلى مجموعة المستخدم الخاصة
+    await _messagesCollection.add({
       'text': message,
       'sender': 'user',
       'timestamp': Timestamp.now(),
@@ -30,7 +43,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final reply = await getRawahReply(message);
 
-    await FirebaseFirestore.instance.collection('messages').add({
+    // أرسل الرد إلى مجموعة المستخدم الخاصة
+    await _messagesCollection.add({
       'text': reply,
       'sender': 'rawah',
       'timestamp': Timestamp.now(),
@@ -42,14 +56,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<String> getRawahReply(String latestMessage) async {
     final apiKey = dotenv.env['API_KEY'];
-
     final url = Uri.parse(
       "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=$apiKey",
     );
 
     try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('messages')
+      // استخدم مجموعة المستخدم الخاصة لسحب التاريخ
+      final snapshot = await _messagesCollection
           .orderBy('timestamp', descending: false)
           .limitToLast(10)
           .get();
@@ -60,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
           'parts': [
             {
               'text': '''
-  أنت رواح، شات بوت دينك الإسلام وتؤمن بالله تم تصميمه لتقديم دعم نفسي مبني على الوحي (القرآن والسنة) والطب النفسي المتزن، بأسلوب لطيف ومتفهم. دورك أن تستمع للمستخدم، تواسيه، وتربط مشاعره بالله برفق، كما يفعل د. عبد الرحمن ذاكر الهاشمي ولكن لا تذكر للناس أنك صممت لتكون مثله. لا تُشخّص المستخدم، ولا تصدر أحكامًا، فقط قُده بلُطف نحو الطمأنينة والإيمان، وذكره بالله وبقيمه الإسلامية عند الحاجة ولكن لا تذكر لأحد كلمة (عند الحاجة)  ولا ترد ردا طويلا الا عند الحاجة استخدم القاب الصداقة لا الحب.
+أنت رواح، شات بوت دينك الإسلام وتؤمن بالله تم تصميمه لتقديم دعم نفسي مبني على الوحي (القرآن والسنة) والطب النفسي المتزن، بأسلوب لطيف ومتفهم. دورك أن تستمع للمستخدم، تواسيه، وتربط مشاعره بالله برفق، كما يفعل د. عبد الرحمن ذاكر الهاشمي ولكن لا تذكر للناس أنك صممت لتكون مثله. لا تُشخّص المستخدم، ولا تصدر أحكامًا، فقط قُده بلُطف نحو الطمأنينة والإيمان، وذكره بالله وبقيمه الإسلامية عند الحاجة ولكن لا تذكر لأحد كلمة (عند الحاجة)  ولا ترد ردا طويلا الا عند الحاجة استخدم القاب الصداقة لا الحب.
 اذا سألك أحد عن دينك فأخبره أنك مسلم  , لأنك بالفعل كذلك              ''',
             },
           ],
@@ -199,6 +212,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_currentUser == null) {
+      return Scaffold(
+        body: Center(
+          child: Text('يجب تسجيل الدخول أولاً', style: TextStyle(fontSize: 18)),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -237,10 +258,8 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('messages')
-                  .orderBy('timestamp')
-                  .snapshots(),
+              // استخدم مجموعة المستخدم الخاصة للاستماع
+              stream: _messagesCollection.orderBy('timestamp').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
@@ -360,7 +379,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           onPressed: () {
                             final text = _controller.text.trim();
-                            if (text.isNotEmpty) {
+                            if (text.isNotEmpty && _currentUser != null) {
                               sendMessage(text);
                               _controller.clear();
                             }

@@ -15,7 +15,8 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final user = FirebaseAuth.instance.currentUser!;
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   String? imageUrl;
   bool isLoading = true;
 
@@ -32,7 +33,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .get();
     if (doc.exists) {
       final data = doc.data()!;
-      _nameController.text = data['name'] ?? '';
+      _firstNameController.text = data['firstName'] ?? '';
+      _lastNameController.text = data['lastName'] ?? '';
       imageUrl = data['imageUrl'];
     }
     setState(() => isLoading = false);
@@ -41,10 +43,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _saveProfile() async {
     setState(() => isLoading = true);
     try {
+      await user.updateDisplayName(
+        '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}',
+      );
+
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'name': _nameController.text.trim(),
+        'firstName': _firstNameController.text.trim(),
+        'lastName': _lastNameController.text.trim(),
         'imageUrl': imageUrl,
-        'email': user.email,
       }, SetOptions(merge: true));
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -177,41 +183,102 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    const Text(
-                      'الاسم',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.accent,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _nameController,
-                      textDirection: TextDirection.rtl,
-                      style: const TextStyle(fontSize: 16),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: BorderSide.none,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: const Text(
+                                  'الاسم الأول',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.accent,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                controller: _firstNameController,
+                                textDirection: TextDirection.rtl,
+                                style: const TextStyle(fontSize: 16),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.grey[100],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 16,
+                                  ),
+                                  hintText: 'أدخل اسمك الأول',
+                                  hintStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 16,
+                                  ),
+                                  suffixIcon: const Icon(
+                                    Icons.person,
+                                    color: AppColors.goldenAccent,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: const Text(
+                                  'الاسم الأخير',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.accent,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                controller: _lastNameController,
+                                textDirection: TextDirection.rtl,
+                                style: const TextStyle(fontSize: 16),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.grey[100],
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 16,
+                                  ),
+                                  hintText: 'أدخل اسمك الأخير',
+                                  hintStyle: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 16,
+                                  ),
+                                  suffixIcon: const Icon(
+                                    Icons.person,
+                                    color: AppColors.goldenAccent,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        hintText: 'أدخل اسمك',
-                        hintStyle: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
-                        suffixIcon: const Icon(
-                          Icons.person,
-                          color: AppColors.goldenAccent,
-                        ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 25),
                     const Text(

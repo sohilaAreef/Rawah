@@ -12,6 +12,7 @@ class AppColors {
   static const Color darkTeal = Color(0xFF005F60);
   static const Color goldenAccent = Color(0xFFFFC107);
   static const Color textWhite = Colors.white;
+  static const Color textSecondary = Color(0xFF757575);
 
   static LinearGradient get mainGradient => const LinearGradient(
     begin: Alignment.topLeft,
