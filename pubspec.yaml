@@ -26,11 +26,15 @@ dependencies:
   flutter_markdown: ^0.6.18
   audioplayers: ^6.5.0
   confetti: ^0.8.0
+  image_picker: ^1.1.2
+  firebase_storage: ^12.4.7
+  video_player: ^2.10.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
@@ -40,3 +44,9 @@ flutter:
     - .env
     - assets/sounds/subgoal_complete.mp3
     - assets/sounds/goal_complete.mp3
+    - assets/videos/splash.mp4
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/rawah_logo.jpg"

@@ -35,6 +35,8 @@ class _GoalCardState extends State<GoalCard> {
   }
 
   void _showGoalCompletedDialog(String title) {
+    _confettiController.play(); // شغلي المؤثر أول ما يظهر
+
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -49,57 +51,85 @@ class _GoalCardState extends State<GoalCard> {
             child: Center(
               child: Material(
                 color: Colors.transparent,
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.emoji_events,
-                        color: Colors.amber,
-                        size: 60,
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'أحسنت! 🎉',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'لقد أكملت الهدف "$title" بنجاح 💪',
-                        style: const TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    // 🎉 Confetti Animation
+                    ConfettiWidget(
+                      confettiController: _confettiController,
+                      blastDirection: -1.57, // لأعلى
+                      emissionFrequency: 0.08,
+                      numberOfParticles: 30,
+                      gravity: 0.3,
+                      maxBlastForce: 20,
+                      minBlastForce: 10,
+                      colors: const [
+                        Colors.teal,
+                        Colors.amber,
+                        Colors.green,
+                        Colors.pink,
+                        Colors.blue,
+                        Colors.purple,
+                      ],
+                    ),
+
+                    // 🏆 Dialog Box
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('رائع!'),
+                        ],
                       ),
-                    ],
-                  ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.emoji_events,
+                            color: Colors.amber,
+                            size: 60,
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'أحسنت! 🎉',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'لقد أكملت الهدف "$title" بنجاح 💪',
+                            style: const TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.teal,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('رائع'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -248,7 +278,7 @@ class _GoalCardState extends State<GoalCard> {
                     value: subGoal.isCompleted,
                     onChanged: (value) async {
                       if (value != null) {
-                        final wasCompleted = subGoal.isCompleted; // قبل التحديث
+                        final wasCompleted = subGoal.isCompleted;
 
                         final updatedGoal = await provider.toggleSubGoal(
                           widget.goal.id,
@@ -256,7 +286,6 @@ class _GoalCardState extends State<GoalCard> {
                           value,
                         );
 
-                        // لو المستخدم عمل check ولسه مكنش مكمّل
                         if (value && !wasCompleted && updatedGoal != null) {
                           if (updatedGoal.progress >= 100) {
                             AppSounds.playGoalComplete();
@@ -269,7 +298,7 @@ class _GoalCardState extends State<GoalCard> {
                               context: context,
                               builder: (_) => AlertDialog(
                                 title: const Text(
-                                  'أحسنت! 💚',
+                                  ' 💚أحسنت! ',
                                   textAlign: TextAlign.center,
                                 ),
                                 content: Text(
@@ -277,10 +306,13 @@ class _GoalCardState extends State<GoalCard> {
                                   textAlign: TextAlign.center,
                                 ),
                                 actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text('رائع!'),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('رائع'),
+                                    ),
                                   ),
                                 ],
                               ),
