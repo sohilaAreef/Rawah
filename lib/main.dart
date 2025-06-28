@@ -3,14 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:rawah/utils/app_sounds.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'firebase_options.dart';
+
 import 'package:rawah/logic/emotion_provider.dart';
 import 'package:rawah/logic/goal_provider.dart';
 import 'package:rawah/logic/value_provider.dart';
-import 'package:rawah/screens/splash_screen.dart';
 import 'package:rawah/services/entry_service.dart';
 import 'package:rawah/services/goal_service.dart';
+import 'package:rawah/screens/splash_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 
 void main() async {
@@ -23,10 +23,10 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ValueProvider()),
-        ChangeNotifierProvider(create: (context) => EmotionProvider()),
-        Provider(create: (context) => EntryService()),
-        Provider(create: (context) => GoalService()),
+        ChangeNotifierProvider(create: (_) => ValueProvider()),
+        ChangeNotifierProvider(create: (_) => EmotionProvider()),
+        Provider(create: (_) => EntryService()),
+        Provider(create: (_) => GoalService()),
         ChangeNotifierProvider(
           create: (context) => GoalProvider(context.read<GoalService>()),
         ),
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.accent,
-            foregroundColor: const Color.fromARGB(255, 230, 234, 241),
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

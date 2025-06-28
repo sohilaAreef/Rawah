@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:rawah/screens/onboarding_screen.dart';
 import 'package:rawah/screens/login_screen.dart';
-import 'package:rawah/screens/home_screen.dart';
+import 'package:rawah/screens/main_home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,7 +20,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
     _controller = VideoPlayerController.asset("assets/videos/splash.mp4")
       ..initialize().then((_) {
         setState(() {});
@@ -43,15 +42,16 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!seenOnboarding) {
       nextScreen = const OnboardingScreen();
     } else if (user == null) {
-      nextScreen = LoginScreen();
+      nextScreen = const LoginScreen();
     } else {
-      nextScreen = const HomeScreen();
+      nextScreen = const MainHomeScreen();
     }
 
     if (mounted) {
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => nextScreen),
+        (route) => false,
       );
     }
   }

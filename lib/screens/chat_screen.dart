@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart'; // أضف هذا الاستيراد
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,10 +18,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isSending = false;
-  final User? _currentUser =
-      FirebaseAuth.instance.currentUser; // احصل على المستخدم الحالي
-
-  // دالة لإنشاء مسار المجموعة الخاص بالمستخدم
+  final User? _currentUser = FirebaseAuth.instance.currentUser;
   CollectionReference get _messagesCollection {
     return FirebaseFirestore.instance
         .collection('users')
@@ -34,7 +31,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     setState(() => _isSending = true);
 
-    // أرسل الرسالة إلى مجموعة المستخدم الخاصة
     await _messagesCollection.add({
       'text': message,
       'sender': 'user',
@@ -43,7 +39,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final reply = await getRawahReply(message);
 
-    // أرسل الرد إلى مجموعة المستخدم الخاصة
     await _messagesCollection.add({
       'text': reply,
       'sender': 'rawah',
@@ -61,7 +56,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
 
     try {
-      // استخدم مجموعة المستخدم الخاصة لسحب التاريخ
       final snapshot = await _messagesCollection
           .orderBy('timestamp', descending: false)
           .limitToLast(10)
@@ -258,7 +252,6 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              // استخدم مجموعة المستخدم الخاصة للاستماع
               stream: _messagesCollection.orderBy('timestamp').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
