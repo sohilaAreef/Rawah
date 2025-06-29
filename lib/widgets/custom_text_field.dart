@@ -8,6 +8,9 @@ class CustomTextField extends StatefulWidget {
   final String? hintText;
   final TextInputType? keyboardType;
   final Color borderColor;
+  final String? helperText;
+  final Color? helperColor;
+
   const CustomTextField({
     super.key,
     required this.label,
@@ -16,6 +19,8 @@ class CustomTextField extends StatefulWidget {
     this.hintText,
     this.keyboardType,
     this.borderColor = AppColors.accent,
+    this.helperText,
+    this.helperColor,
   });
 
   @override
@@ -27,43 +32,62 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: widget.controller,
-      obscureText: widget.isPassword && _obscureText,
-      keyboardType: widget.keyboardType,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        labelStyle: TextStyle(color: AppColors.textSecondary),
-        hintText: widget.hintText,
-        hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.7)),
-        filled: true,
-        fillColor: Colors.grey[100],
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: widget.borderColor),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: widget.controller,
+          obscureText: widget.isPassword && _obscureText,
+          keyboardType: widget.keyboardType,
+          decoration: InputDecoration(
+            labelText: widget.label,
+            labelStyle: const TextStyle(color: AppColors.textSecondary),
+            hintText: widget.hintText,
+            hintStyle: TextStyle(
+              color: AppColors.textSecondary.withOpacity(0.7),
+            ),
+            filled: true,
+            fillColor: Colors.grey[100],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: widget.borderColor),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: widget.borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: widget.borderColor, width: 2),
+            ),
+            suffixIcon: widget.isPassword
+                ? IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )
+                : null,
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: widget.borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: widget.borderColor, width: 2),
-        ),
-        suffixIcon: widget.isPassword
-            ? IconButton(
-                icon: Icon(
-                  _obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.textSecondary,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _obscureText = !_obscureText;
-                  });
-                },
-              )
-            : null,
-      ),
+        if (widget.helperText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 6, right: 8),
+            child: Text(
+              widget.helperText!,
+              style: TextStyle(
+                color: widget.helperColor ?? AppColors.textSecondary,
+                fontSize: 13,
+              ),
+              textAlign: TextAlign.right,
+            ),
+          ),
+      ],
     );
   }
 }

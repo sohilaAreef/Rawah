@@ -1,4 +1,3 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:rawah/screens/chat_screen.dart';
 import 'package:rawah/screens/emotions_home_screen.dart';
@@ -41,43 +40,62 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
+      extendBody: true,
       body: screens[_selectedIndex],
-      bottomNavigationBar: CurvedNavigationBar(
-        index: _selectedIndex,
-        height: 60,
-        color: Colors.white,
-        backgroundColor: AppColors.accent,
-        items: <Widget>[
-          Icon(
-            Icons.chat_bubble_outline,
-            size: 30,
-            color: _selectedIndex == 0 ? AppColors.accent : Colors.grey,
+      bottomNavigationBar: Container(
+        height:
+            kBottomNavigationBarHeight + MediaQuery.of(context).padding.bottom,
+        decoration: BoxDecoration(
+          color: AppColors.accent,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-          Icon(
-            Icons.emoji_events,
-            size: 30,
-            color: _selectedIndex == 1 ? AppColors.accent : Colors.grey,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-
-          Icon(
-            Icons.emoji_emotions,
-            size: 30,
-            color: _selectedIndex == 2 ? AppColors.accent : Colors.grey,
+          child: BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            backgroundColor: Colors.white,
+            selectedItemColor: AppColors.accent,
+            unselectedItemColor: Colors.grey,
+            type: BottomNavigationBarType.fixed,
+            elevation: 10,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.chat_bubble_outline),
+                label: 'الدردشة',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.emoji_events),
+                label: 'الإنجازات',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.emoji_emotions),
+                label: 'المشاعر',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.flag_circle_outlined),
+                label: 'الأهداف',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'الرئيسية',
+              ),
+            ],
           ),
-
-          Icon(
-            Icons.flag_circle_outlined,
-            size: 30,
-            color: _selectedIndex == 3 ? AppColors.accent : Colors.grey,
-          ),
-
-          Icon(
-            Icons.home,
-            size: 30,
-            color: _selectedIndex == 4 ? AppColors.accent : Colors.grey,
-          ),
-        ],
-        onTap: _onItemTapped,
+        ),
       ),
     );
   }

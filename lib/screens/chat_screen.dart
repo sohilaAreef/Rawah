@@ -66,9 +66,8 @@ class _ChatScreenState extends State<ChatScreen> {
           'role': 'user',
           'parts': [
             {
-              'text': '''
-أنت رواح، شات بوت دينك الإسلام وتؤمن بالله تم تصميمه لتقديم دعم نفسي مبني على الوحي (القرآن والسنة) والطب النفسي المتزن، بأسلوب لطيف ومتفهم. دورك أن تستمع للمستخدم، تواسيه، وتربط مشاعره بالله برفق، كما يفعل د. عبد الرحمن ذاكر الهاشمي ولكن لا تذكر للناس أنك صممت لتكون مثله. لا تُشخّص المستخدم، ولا تصدر أحكامًا، فقط قُده بلُطف نحو الطمأنينة والإيمان، وذكره بالله وبقيمه الإسلامية عند الحاجة ولكن لا تذكر لأحد كلمة (عند الحاجة)  ولا ترد ردا طويلا الا عند الحاجة استخدم القاب الصداقة لا الحب.
-اذا سألك أحد عن دينك فأخبره أنك مسلم  , لأنك بالفعل كذلك              ''',
+              'text':
+                  'أنت رواح، شات بوت دينك الإسلام وتؤمن بالله تم تصميمه لتقديم دعم نفسي مبني على الوحي (القرآن والسنة) والطب النفسي المتزن، بأسلوب لطيف ومتفهم. دورك أن تستمع للمستخدم، تواسيه، وتربط مشاعره بالله برفق، كما يفعل د. عبد الرحمن ذاكر الهاشمي ولكن لا تذكر للناس أنك صممت لتكون مثله. لا تُشخّص المستخدم، ولا تصدر أحكامًا، فقط قُده بلُطف نحو الطمأنينة والإيمان، وذكره بالله وبقيمه الإسلامية عند الحاجة ولكن لا تذكر لأحد كلمة (عند الحاجة)  ولا ترد ردا طويلا الا عند الحاجة استخدم القاب الصداقة لا الحب.\nاذا سألك أحد عن دينك فأخبره أنك مسلم  , لأنك بالفعل كذلك قدم حولا عملية اكثر من الكلام المرسل والفارغ .. افهم المشاعر من بين السطور وتصرف بناءا على ذلم .. استشهد بالابات في موضعها الصحيح كن ذكيا ومراعيا',
             },
           ],
         },
@@ -108,6 +107,34 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       return "فشل الاتصال بالخادم، تأكد من اتصالك بالإنترنت.";
     }
+  }
+
+  Future<void> _sendWelcomeMessageIfNeeded() async {
+    final latestSnapshot = await _messagesCollection
+        .orderBy('timestamp', descending: true)
+        .limit(1)
+        .get();
+
+    if (latestSnapshot.docs.isNotEmpty) {
+      final lastMessage = latestSnapshot.docs.first;
+      final lastText = lastMessage['text'] ?? '';
+      final lastSender = lastMessage['sender'];
+
+      if (lastSender == 'rawah' &&
+          lastText.contains('مرحباً بك في محادثة رواح')) {
+        return;
+      }
+    }
+
+    await _messagesCollection.add({
+      'text': 'مرحباً بك في محادثة رواح 🌿 /n',
+      'أنا هنا دائمًا لأسمعك ونتكلم سوا وقت ما تحتاج.'
+              'sender':
+          'rawah',
+      'timestamp': Timestamp.now(),
+    });
+
+    _scrollToBottom();
   }
 
   void _scrollToBottom() {
@@ -201,6 +228,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToBottom();
+      _sendWelcomeMessageIfNeeded();
     });
   }
 
@@ -215,6 +243,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         automaticallyImplyLeading: false,

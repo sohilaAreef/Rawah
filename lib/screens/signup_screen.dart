@@ -24,7 +24,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
   bool _isLoading = false;
+  String? passwordHelper;
+  Color? passwordHelperColor;
+  String? confirmPasswordHelper;
+  Color? confirmPasswordHelperColor;
+
+  void _checkPasswordStrength(String value) {
+    if (value.length < 6) {
+      passwordHelper = 'كلمة المرور ضعيفة جداً';
+      passwordHelperColor = Colors.red;
+    } else if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+      passwordHelper = 'يفضل استخدام حروف كبيرة وصغيرة وأرقام';
+      passwordHelperColor = Colors.orange;
+    } else {
+      passwordHelper = 'كلمة المرور قوية';
+      passwordHelperColor = Colors.green;
+    }
+    setState(() {});
+  }
+
+  void _checkPasswordMatch(String value) {
+    if (value != _passwordController.text) {
+      confirmPasswordHelper = 'كلمتا المرور غير متطابقتين';
+      confirmPasswordHelperColor = Colors.red;
+    } else {
+      confirmPasswordHelper = 'كلمتا المرور متطابقتان';
+      confirmPasswordHelperColor = Colors.green;
+    }
+    setState(() {});
+  }
 
   Future<void> _signUpWithEmail() async {
     if (_passwordController.text != _confirmPasswordController.text) {
@@ -54,16 +85,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
         'email': _emailController.text.trim(),
+        'phone': _phoneController.text.trim(),
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      await userCredential.user?.reload();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } catch (e) {
-      print('SignUp Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -106,6 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'firstName': firstName,
           'lastName': lastName,
           'email': googleUser.email,
+          'phone': _phoneController.text.trim(),
           'createdAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
       }
@@ -115,7 +146,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } catch (e) {
-      print('Google Sign Up Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('فشل إنشاء الحساب عبر Google.'),
@@ -139,15 +169,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
               height: 230,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColors.accent,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [AppColors.accent, AppColors.darkTeal],
+                ),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
                 ),
               ),
               child: Center(
@@ -158,11 +187,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Image.asset(
                       'assets/images/hello.png',
                       height: 80,
-                      fit: BoxFit.contain,
                       color: Colors.white,
                     ),
                     const SizedBox(height: 10),
-                    Text(
+                    const Text(
                       'مرحباً بك في رواح!',
                       style: TextStyle(
                         fontSize: 24,
@@ -170,7 +198,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 5),
                     Text(
                       'لنبدأ رحلتك معنا',
                       style: TextStyle(fontSize: 16, color: Colors.grey[200]),
@@ -188,15 +215,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'إنشاء حساب جديد',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                    const Text(
+                      'إنشاء حساب جديد',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -231,10 +255,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 20),
                     CustomTextField(
+                      label: 'رقم الهاتف',
+                      isPassword: false,
+                      controller: _phoneController,
+                      hintText: 'مثال: 01012345678',
+                      keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: 20),
+                    CustomTextField(
                       label: 'كلمة المرور',
                       isPassword: true,
                       controller: _passwordController,
                       hintText: 'أدخل كلمة مرور قوية',
+                      helperText: passwordHelper,
+                      helperColor: passwordHelperColor,
                     ),
                     const SizedBox(height: 20),
                     CustomTextField(
@@ -242,6 +276,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       isPassword: true,
                       controller: _confirmPasswordController,
                       hintText: 'أعد إدخال كلمة المرور',
+                      helperText: confirmPasswordHelper,
+                      helperColor: confirmPasswordHelperColor,
                     ),
                     const SizedBox(height: 30),
                     CustomButton(
@@ -252,7 +288,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       textColor: Colors.white,
                     ),
                     const SizedBox(height: 30),
-                    Center(
+                    const Center(
                       child: Text(
                         'أو سجل باستخدام...',
                         style: TextStyle(color: Colors.black, fontSize: 16),
@@ -262,7 +298,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Center(
                       child: IconButton(
                         onPressed: _signUpWithGoogle,
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.g_mobiledata,
                           size: 42,
                           color: Colors.red,
@@ -274,7 +310,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
+                          const Text(
                             ' لديك حساب بالفعل؟ ',
                             style: TextStyle(
                               color: AppColors.darkTeal,
@@ -290,7 +326,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               );
                             },
-                            child: Text(
+                            child: const Text(
                               'تسجيل الدخول',
                               style: TextStyle(
                                 color: Colors.black,

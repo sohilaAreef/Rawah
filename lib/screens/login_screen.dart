@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rawah/screens/forgot_password_screen.dart';
 import 'package:rawah/screens/signup_screen.dart';
 import 'package:rawah/screens/home_screen.dart';
 import '../utils/app_colors.dart';
@@ -96,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColors.accent,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
@@ -107,7 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   colors: [AppColors.accent, AppColors.darkTeal],
                 ),
               ),
-
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -125,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: const Color.fromARGB(255, 255, 255, 255),
                       ),
                     ),
                   ],
@@ -141,15 +140,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'تسجيل الدخول',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                    // تم تعديل لون النص هنا
+                    Text(
+                      'تسجيل الدخول',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.darkTeal, // لون مرئي
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -170,16 +167,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderColor: AppColors.accent,
                     ),
                     const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
+
+                    // الزر المعدل هنا (الأهم)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const ForgotPasswordScreen(),
+                            ),
+                          );
+                        },
                         child: Text(
                           'نسيت كلمة المرور؟',
-                          style: TextStyle(color: AppColors.accent),
+                          style: TextStyle(
+                            color: AppColors.accent,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 25),
                     CustomButton(
                       text: 'تسجيل الدخول',
@@ -193,7 +206,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     Center(
                       child: Text(
                         'أو سجل الدخول باستخدام...',
-                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.grey, // لون محسن
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 15),

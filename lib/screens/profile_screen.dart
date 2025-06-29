@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:rawah/utils/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -17,7 +14,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final user = FirebaseAuth.instance.currentUser!;
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  String? imageUrl;
   bool isLoading = true;
 
   @override
@@ -35,7 +31,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final data = doc.data()!;
       _firstNameController.text = data['firstName'] ?? '';
       _lastNameController.text = data['lastName'] ?? '';
-      imageUrl = data['imageUrl'];
     }
     setState(() => isLoading = false);
   }
@@ -50,7 +45,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'firstName': _firstNameController.text.trim(),
         'lastName': _lastNameController.text.trim(),
-        'imageUrl': imageUrl,
       }, SetOptions(merge: true));
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,31 +62,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
     setState(() => isLoading = false);
-  }
-
-  Future<void> _pickAndUploadImage() async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() => isLoading = true);
-      try {
-        final file = File(picked.path);
-        final ref = FirebaseStorage.instance.ref().child(
-          'profile_images/${user.uid}',
-        );
-        await ref.putFile(file);
-        imageUrl = await ref.getDownloadURL();
-        await _saveProfile();
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('حدث خطأ: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        setState(() => isLoading = false);
-      }
-    }
   }
 
   @override
@@ -122,66 +91,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Center(
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          Container(
-                            width: 140,
-                            height: 140,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColors.goldenAccent,
-                                width: 3,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.goldenAccent.withOpacity(
-                                    0.3,
-                                  ),
-                                  blurRadius: 8,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: CircleAvatar(
-                              radius: 66,
-                              backgroundImage: imageUrl != null
-                                  ? NetworkImage(imageUrl!)
-                                  : null,
-                              backgroundColor: AppColors.goldenAccent
-                                  .withOpacity(0.2),
-                              child: imageUrl == null
-                                  ? const Icon(
-                                      Icons.person,
-                                      size: 60,
-                                      color: AppColors.goldenAccent,
-                                    )
-                                  : null,
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: AppColors.goldenAccent,
-                                width: 2,
-                              ),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.camera_alt,
-                                color: AppColors.goldenAccent,
-                                size: 28,
-                              ),
-                              onPressed: _pickAndUploadImage,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     const SizedBox(height: 30),
                     Row(
                       children: [
@@ -198,7 +107,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.accent,
                                   ),
-                                  textAlign: TextAlign.right,
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -245,7 +153,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.accent,
                                   ),
-                                  textAlign: TextAlign.right,
                                 ),
                               ),
                               const SizedBox(height: 12),

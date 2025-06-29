@@ -35,7 +35,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           .collection('users')
           .doc(user.uid)
           .get();
-
       if (doc.exists) {
         final data = doc.data()!;
         setState(() {
@@ -60,6 +59,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: AppBar(
             backgroundColor: Colors.white,
             elevation: 0,
@@ -99,7 +99,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         );
                       },
                     ),
-
                     ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       leading: const Icon(
@@ -124,9 +123,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         );
                       },
                     ),
-
                     const Divider(height: 40, color: Colors.grey),
-
                     ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                       leading: const Icon(Icons.logout, color: Colors.red),
@@ -141,9 +138,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       ),
                       onTap: () async {
                         Navigator.pop(context);
-
                         await FirebaseAuth.instance.signOut();
-
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -157,7 +152,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               ),
             ),
           ),
-
           backgroundColor: Colors.white,
           body: SafeArea(
             child: isLoading
@@ -195,12 +189,12 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              Align(
+                              const Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
                                   'اختر ما يناسبك حسب حالتك النفسية✨ ',
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
                                   ),
@@ -210,7 +204,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                           ),
                         ),
                         const SizedBox(height: 30),
-
                         _buildSectionTitle(
                           'الرفاه النفسي',
                           'ساعد نفسك على تخطي المشاعر السلبية وتعزيز الإيجابية',
@@ -242,7 +235,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                           ),
                         ]),
                         const SizedBox(height: 30),
-
                         _buildSectionTitle(
                           'الإنجاز والشكر',
                           'سجّل إنجازاتك واحتفل بنفسك',
@@ -274,8 +266,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                           ),
                         ]),
                         const SizedBox(height: 30),
-
-                        // Section 3: الدعم النفسي
                         _buildSectionTitle(
                           'الدعم النفسي',
                           'تحدث إلى رواح، صديقك الداعم دائمًا',

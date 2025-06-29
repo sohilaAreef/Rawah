@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:provider/provider.dart';
 import 'package:rawah/utils/app_sounds.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,6 +21,8 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  await _initializeAppCheck();
+
   runApp(
     MultiProvider(
       providers: [
@@ -34,6 +37,23 @@ void main() async {
       child: const MyApp(),
     ),
   );
+}
+
+Future<void> _initializeAppCheck() async {
+  try {
+    await FirebaseAppCheck.instance.activate(
+      webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+      androidProvider: AndroidProvider.playIntegrity,
+      appleProvider: AppleProvider.appAttest,
+    );
+
+    await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(true);
+
+    final token = await FirebaseAppCheck.instance.getToken(true);
+    print('App Check Token: $token');
+  } catch (e) {
+    print('Error initializing App Check: $e');
+  }
 }
 
 class MyApp extends StatelessWidget {
