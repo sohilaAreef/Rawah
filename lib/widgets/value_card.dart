@@ -6,121 +6,124 @@ import 'package:rawah/utils/app_colors.dart';
 
 class ValueCard extends StatelessWidget {
   final ValueModel value;
-  final double cardHeight;
+  final bool isSelected;
 
-  const ValueCard({
-    super.key, 
-    required this.value,
-    this.cardHeight = 150,
-  });
+  const ValueCard({super.key, required this.value, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
-    final valueProvider = Provider.of<ValueProvider>(context);
-    final isSelected = valueProvider.isSelected(value);
-
-    return GestureDetector(
-      onTap: () => valueProvider.toggleValue(value),
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        Provider.of<ValueProvider>(context, listen: false).toggleValue(value);
+      },
       child: Container(
-        height: cardHeight,
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
+          color: isSelected ? AppColors.accent.withOpacity(0.1) : Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: 2,
+              offset: const Offset(0, 4),
             ),
           ],
+          border: Border.all(
+            color: isSelected ? AppColors.accent : Colors.grey.shade300,
+            width: isSelected ? 1.5 : 1,
+          ),
         ),
         child: Stack(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(isSelected ? 0.4 : 0.2),
-                  BlendMode.darken,
-                ),
-                child: Image.network(
-                  value.image,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            
-
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black.withOpacity(0.7),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-            
-            // حدود بطاقة التحديد
-            if (isSelected)
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.accent,
-                    width: 3,
-                  ),
-                ),
-              ),
-            
             if (isSelected)
               Positioned(
-                top: 12,
-                left: 12,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: AppColors.accent,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                top: -10,
+                right: -10,
+                child: Icon(
+                  Icons.star,
+                  size: 60,
+                  color: AppColors.accent.withOpacity(0.1),
                 ),
               ),
-            
-           
-            Positioned(
-              bottom: 16,
-              right: 16,
-              left: 16,
-              child: Directionality(
-                textDirection: TextDirection.rtl,
-                child: Text(
-                  value.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black45,
-                        blurRadius: 4,
-                        offset: Offset(1, 1),
+
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isSelected
+                          ? AppColors.accent.withOpacity(0.1)
+                          : Colors.grey.shade100,
+                      border: Border.all(
+                        color: isSelected
+                            ? AppColors.accent
+                            : Colors.grey.shade300,
+                        width: 1.5,
                       ),
-                    ],
+                    ),
+                    child: Icon(
+                      value.icon,
+                      color: isSelected ? AppColors.accent : Colors.grey,
+                      size: 28,
+                    ),
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+
+                  const SizedBox(height: 12),
+
+                  Text(
+                    value.title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? AppColors.accent : Colors.black87,
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Text(
+                    value.description,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                      color: isSelected
+                          ? AppColors.accent.withOpacity(0.8)
+                          : Colors.grey.shade700,
+                    ),
+                  ),
+
+                  const Spacer(),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.accent
+                          : Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      isSelected ? 'مختارة' : 'غير مختارة',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isSelected ? Colors.white : Colors.grey.shade700,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

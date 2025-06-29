@@ -243,6 +243,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -277,144 +278,148 @@ class _ChatScreenState extends State<ChatScreen> {
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _messagesCollection.orderBy('timestamp').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(color: AppColors.accent),
-                  );
-                }
-
-                final messages = snapshot.data!.docs;
-                if (messages.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 20),
-                        Text(
-                          'مرحباً، أنا رواح.. مستعد لأسمعك',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'كيف تشعر اليوم؟',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey[500],
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (_scrollController.hasClients) {
-                    _scrollController.animateTo(
-                      _scrollController.position.maxScrollExtent,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeOut,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _messagesCollection.orderBy('timestamp').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(color: AppColors.accent),
                     );
                   }
-                });
 
-                return ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.only(top: 16),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final msg = messages[index];
-                    return _buildMessageBubble(
-                      msg['sender'] == 'user',
-                      msg['text'],
+                  final messages = snapshot.data!.docs;
+                  if (messages.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 20),
+                          Text(
+                            'مرحباً، أنا رواح.. مستعد لأسمعك',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'كيف تشعر اليوم؟',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[500],
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ),
                     );
-                  },
-                );
-              },
+                  }
+
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (_scrollController.hasClients) {
+                      _scrollController.animateTo(
+                        _scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
+                    }
+                  });
+
+                  return ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.only(top: 16),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final msg = messages[index];
+                      return _buildMessageBubble(
+                        msg['sender'] == 'user',
+                        msg['text'],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 10,
-                  offset: Offset(0, -2),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                if (_isSending)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.accent,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 10,
+                    offset: Offset(0, -2),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  if (_isSending)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.accent,
+                        ),
+                      ),
+                    ),
+                  Expanded(
+                    child: SafeArea(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _controller,
+                                textAlign: TextAlign.right,
+                                minLines: 1,
+                                maxLines: 5,
+                                keyboardType: TextInputType.multiline,
+                                decoration: InputDecoration(
+                                  hintText: "كيف تشعر الآن؟ رواح سينصت إليك 🌿",
+                                  hintStyle: TextStyle(color: Colors.grey[600]),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 12,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.send_rounded,
+                                color: AppColors.accent,
+                              ),
+                              onPressed: () {
+                                final text = _controller.text.trim();
+                                if (text.isNotEmpty && _currentUser != null) {
+                                  sendMessage(text);
+                                  _controller.clear();
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _controller,
-                            textAlign: TextAlign.right,
-                            minLines: 1,
-                            maxLines: 5,
-                            keyboardType: TextInputType.multiline,
-                            decoration: InputDecoration(
-                              hintText: "كيف تشعر الآن؟ رواح سينصت إليك 🌿",
-                              hintStyle: TextStyle(color: Colors.grey[600]),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 12,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.send_rounded,
-                            color: AppColors.accent,
-                          ),
-                          onPressed: () {
-                            final text = _controller.text.trim();
-                            if (text.isNotEmpty && _currentUser != null) {
-                              sendMessage(text);
-                              _controller.clear();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

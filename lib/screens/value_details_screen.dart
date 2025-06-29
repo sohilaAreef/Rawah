@@ -21,74 +21,85 @@ class _ValueDetailsScreenState extends State<ValueDetailsScreen> {
           backgroundColor: AppColors.accent,
           foregroundColor: Colors.white,
           automaticallyImplyLeading: false,
-          
           title: Text(
-        widget.value.title,
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-            ),
+            widget.value.title,
+            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           elevation: 0,
           centerTitle: true,
           actions: [
             IconButton(
-              icon: Icon(Icons.arrow_forward, color: AppColors.accent),
+              icon: const Icon(Icons.arrow_forward, color: Colors.white),
               onPressed: () => Navigator.pop(context),
             ),
           ],
         ),
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                height: 250,
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: NetworkImage(widget.value.image),
-                    fit: BoxFit.cover,
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // الأيقونة الكبيرة في الأعلى
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppColors.accent.withOpacity(0.1),
+                    shape: BoxShape.circle,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),)
-                  ],
-                ),
-              ),
-              
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),)
-                  ],
-                ),
-                child: Text(
-                  widget.value.description,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 18,
-                    height: 1.8,
-                    color: Colors.grey[800],
+                  child: Icon(
+                    widget.value.icon,
+                    size: 80,
+                    color: AppColors.accent,
                   ),
                 ),
-              ),
-              
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(
+
+                const SizedBox(height: 24),
+
+                // وصف القيمة
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade200,
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'عن القيمة:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.accent,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        widget.value.description,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: 18,
+                          height: 1.6,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // خطوات التطبيق
+                const Text(
                   'خطوات التطبيق:',
                   textAlign: TextAlign.right,
                   style: TextStyle(
@@ -97,52 +108,61 @@ class _ValueDetailsScreenState extends State<ValueDetailsScreen> {
                     color: AppColors.accent,
                   ),
                 ),
-              ),
-              
-              ...widget.value.steps.map((step) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 2,
-                      offset: Offset(0, 1),)
-                  ],
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(4),
+
+                const SizedBox(height: 16),
+
+                ...widget.value.steps.map(
+                  (step) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.2),
-                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade100,
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
-                      child: Icon(Icons.check, 
-                        size: 20, 
-                        color: AppColors.accent),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        step,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 17,
-                          height: 1.6,
-                          color: Colors.grey[800],
-                        ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.accent.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.check,
+                              size: 20,
+                              color: AppColors.accent,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              step,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                fontSize: 17,
+                                height: 1.6,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              )),
-              
-              SizedBox(height: 24),
-            ],
+
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),

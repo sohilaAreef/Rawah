@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rawah/logic/value_provider.dart';
+import 'package:rawah/screens/value_details_screen.dart';
 import 'package:rawah/screens/value_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
-import 'package:rawah/widgets/selected_value_item.dart';
+import 'package:rawah/models/value_model.dart';
+import 'package:rawah/widgets/selected_value_card.dart';
 
 class SelectedValuesScreen extends StatelessWidget {
   const SelectedValuesScreen({super.key});
@@ -14,69 +16,175 @@ class SelectedValuesScreen extends StatelessWidget {
     final selected = valueProvider.selectedValues;
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        toolbarHeight: 80,
-        centerTitle: false,
+        elevation: 4,
         title: const Align(
           alignment: Alignment.centerRight,
           child: Text(
-            "قيمك المختارة",
+            "🌟 قيمك المختارة",
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ),
         backgroundColor: AppColors.accent,
-        elevation: 2,
-        iconTheme: const IconThemeData(color: AppColors.secondary),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit, color: AppColors.goldenAccent),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ValuesScreen()),
+              );
+            },
+          ),
+        ],
       ),
-      body: selected.isEmpty
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset('assets/images/empty-box.png', fit: BoxFit.contain),
-                const SizedBox(height: 20),
-                const Text(
-                  'لم تقم بإضافة أي قيم بعد.',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                  ),
-                  textAlign: TextAlign.center,
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12.withOpacity(0.05),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 3),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accent,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 10,
+                    ),
+                    elevation: 2,
+                  ),
+                  icon: const Icon(Icons.add, size: 20, color: Colors.white),
+                  label: const Text(
+                    'إضافة قيم جديدة',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (_) => const ValuesScreen()),
                     );
                   },
-                  child: const Text(
-                    'أضف قيمك',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
+                Text(
+                  "عدد القيم: ${selected.length}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: AppColors.accent,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: selected.length,
-              itemBuilder: (context, index) {
-                return SelectedValueItem(value: selected[index]);
-              },
             ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "✨ اضغط على أي قيمة لعرض تفاصيلها، وراجع نفسك دومًا 🌿",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: selected.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.inbox_outlined,
+                        size: 90,
+                        color: AppColors.accent.withOpacity(0.25),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'لا توجد قيم حتى الآن!',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey.shade700,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accent,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 36,
+                            vertical: 14,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ValuesScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'ابدأ باختيار قيمك 💫',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    itemCount: selected.length,
+                    itemBuilder: (context, index) {
+                      final value = selected[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ValueDetailsScreen(value: value),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: SelectedValueCard(
+                            value: value,
+                            onDelete: () => valueProvider.removeValue(value),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

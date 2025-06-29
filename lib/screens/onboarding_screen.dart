@@ -37,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {
       'image': 'assets/images/values.png',
       'title': 'عزز قيمك بالحياة اليومية',
-      'heading': 'قوّي قيمك بالأفعال.',
+      'heading': 'قوّ قيمك بالأفعال.',
       'description':
           'اختر قيمة أساسية تعيش بيها، وخلي التطبيق يساعدك تعززها يوميًا بأفعال واضحة.',
     },
