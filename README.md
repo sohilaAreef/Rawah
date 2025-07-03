@@ -94,17 +94,22 @@ Their involvement helped in testing, documentation preparation, and idea validat
 
 ## Screenshots
 
-<p align="center">
-  <img src="screenshots/login_screen.png" alt="Login Screen" width="250"/>
-  <img src="screenshots/home_screen.png" alt="Home Screen" width="250"/>
-  <img src="screenshots/chat_screen.png" alt="Chat Screen" width="250"/>
-</p>
+<div align="center" style="margin-top: 20px; margin-bottom: 20px;">
 
-<p align="center">
-  <img src="screenshots/mood_tracker_screen.png" alt="Mood Tracker" width="250"/>
-  <img src="screenshots/goal_screen.png" alt="Goals" width="250"/>
-  <img src="screenshots/achievement_screen.png" alt="Achievements" width="250"/>
-</p>
+  <img src="screenshots/login_screen.png" alt="Login Screen" width="250" style="margin: 10px;"/>
+  <img src="screenshots/home_screen.png" alt="Home Screen" width="250" style="margin: 10px;"/>
+  <img src="screenshots/chat_screen.png" alt="Chatbot Screen" width="250" style="margin: 10px;"/>
+
+</div>
+
+<div align="center" style="margin-top: 20px; margin-bottom: 20px;">
+
+  <img src="screenshots/mood_tracker_screen.png" alt="Mood Tracker" width="250" style="margin: 10px;"/>
+  <img src="screenshots/goal_screen.png" alt="Goal Screen" width="250" style="margin: 10px;"/>
+  <img src="screenshots/achievement_screen.png" alt="Achievements Screen" width="250" style="margin: 10px;"/>
+
+</div>
+
 
 
 ## Contact
