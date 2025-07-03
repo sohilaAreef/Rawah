@@ -94,23 +94,18 @@ Their involvement helped in testing, documentation preparation, and idea validat
 
 ## Screenshots
 
-### Login Screen
-![Login Screen](screenshots/login_screen.png)
+<p align="center">
+  <img src="screenshots/login_screen.png" alt="Login Screen" width="250"/>
+  <img src="screenshots/home_screen.png" alt="Home Screen" width="250"/>
+  <img src="screenshots/chat_screen.png" alt="Chat Screen" width="250"/>
+</p>
 
-### Home Screen
-![Home Screen](screenshots/home_screen.png)
+<p align="center">
+  <img src="screenshots/mood_tracker_screen.png" alt="Mood Tracker" width="250"/>
+  <img src="screenshots/goal_screen.png" alt="Goals" width="250"/>
+  <img src="screenshots/achievement_screen.png" alt="Achievements" width="250"/>
+</p>
 
-### Chatbot Screen
-![Chat Screen](screenshots/chat_screen.png)
-
-### Mood Tracker
-![Mood Tracker](screenshots/mood_tracker_screen.png)
-
-### Goals Page
-![Goals](screenshots/goal_screen.png)
-
-### Achievements Page
-![Achievements](screenshots/achievement_screen.png)
 
 ## Contact
 
