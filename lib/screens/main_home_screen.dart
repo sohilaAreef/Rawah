@@ -628,6 +628,18 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       return Align(alignment: Alignment.centerRight, child: children.first);
     }
 
+    if (children.length == 2) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: children.map((child) {
+          return SizedBox(
+            width: (MediaQuery.of(context).size.width - 72) / 2,
+            child: child,
+          );
+        }).toList(),
+      );
+    }
+
     return Wrap(
       spacing: 16,
       runSpacing: 16,
