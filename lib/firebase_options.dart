@@ -19,7 +19,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: "AIzaSyAyc47mvSrDaKVzLGQOCASqUpoTQH1Z3Gg",
-    appId: "1:444594661353:android:70cb444a11cfec6b648d78",
+    appId: "1:444594661353:android:e3b3ee31d8e48ff5648d78",
     messagingSenderId: "444594661353",
     projectId: "rawah-d3515",
     storageBucket: "rawah-d3515.firebasestorage.app",
@@ -31,6 +31,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: "444594661353",
     projectId: "rawah-d3515",
     storageBucket: "rawah-d3515.firebasestorage.app",
-    iosBundleId: "com.example.rawah",
+    iosBundleId: "com.sohila.rawah",
   );
 }

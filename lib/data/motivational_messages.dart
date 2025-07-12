@@ -1,6 +1,4 @@
-import 'package:intl/intl.dart';
-
-class MotivationalMessages{
+class MotivationalMessages {
   final List<String> _messages = [
     "ابدأ يومك بابتسامة وثقة بالله 🌸 لا تنس تسجيل أهدافك في تطبيق رواح. 📲✅",
     "خطوة صغيرة اليوم تصنع فرقًا كبيرًا غدًا! لا تنس تسجيل أهدافك في تطبيق رواح. 📲✅",
@@ -30,7 +28,4 @@ class MotivationalMessages{
     final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
     return _messages[dayOfYear % _messages.length];
   }
-
-
-
 }

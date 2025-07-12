@@ -162,11 +162,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   const SizedBox(height: 20),
                   const Text(
-                    'الإصدار: 1.0.0',
+                    'الإصدار: 1.0.4',
                     textAlign: TextAlign.right,
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
+
                   const Text(
                     'المطورون:',
                     style: TextStyle(
@@ -181,7 +182,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildDeveloper('أسماء محمد سعد'),
                   _buildDeveloper('ميرفت العفيفي'),
                   _buildDeveloper('رفيدة عصام'),
-                  _buildDeveloper('منار'),
+                  _buildDeveloper('منار السيد'),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'تم تطوير التطبيق تحت الإشراف الأكاديمي:',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.accent,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      'د. مها مدحت - مدرس بجامعة الأزهر',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
                 ],
               ),
             ),

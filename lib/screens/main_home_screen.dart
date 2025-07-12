@@ -1,10 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:rawah/screens/achievements_screen.dart';
-import 'package:rawah/screens/chat_screen.dart';
-import 'package:rawah/screens/emotions_home_screen.dart';
-import 'package:rawah/screens/goal_screen.dart';
 import 'package:rawah/screens/home_screen.dart';
 import 'package:rawah/screens/login_screen.dart';
 import 'package:rawah/screens/profile_screen.dart';
@@ -289,6 +285,52 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                                         ],
                                       ),
                                     ),
+                                    const SizedBox(height: 24),
+                                    const Divider(
+                                      height: 32,
+                                      thickness: 1,
+                                      color: Colors.grey,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        'تم تطوير التطبيق تحت الإشراف الأكاديمي:',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.accent,
+                                        ),
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 6),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        'د. مها مدحت - مدرس بجامعة الأزهر',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black87,
+                                        ),
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        'المطورات:\nسهيلة عريف - أسماء محمد سعد - ميرفت العفيفي - رفيدة عصام - منار السيد',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black87,
+                                          height: 1.5,
+                                        ),
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -384,6 +426,47 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                           },
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/azhar.png',
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.contain,
+                              ),
+                              SizedBox(width: 20),
+                              Image.asset(
+                                'assets/images/sce.png',
+                                height: 70,
+                                width: 70,
+                                fit: BoxFit.contain,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 12),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0,
+                            ),
+                            child: Text(
+                              'قسم نظم وحاسبات - كلية الهندسة - جامعة الأزهر',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
 
                     const Divider(height: 40, color: Colors.grey),
@@ -579,13 +662,39 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   }
 
   void _launchEmail(String email) async {
-    final Uri emailUri = Uri(scheme: 'mailto', path: email);
-    if (await canLaunchUrl(emailUri)) {
-      await launchUrl(emailUri);
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('تعذر فتح البريد الإلكتروني')));
+    final Uri emailAppUri = Uri(
+      scheme: 'mailto',
+      path: email,
+      query: 'subject=مراسلة من تطبيق رواح',
+    );
+
+    final Uri gmailWebUri = Uri.parse(
+      'https://mail.google.com/mail/?view=cm&fs=1&to=$email&su=مراسلة من تطبيق رواح',
+    );
+
+    try {
+      bool opened = await launchUrl(
+        emailAppUri,
+        mode: LaunchMode.externalApplication,
+      );
+
+      if (!opened) {
+        if (!await launchUrl(
+          gmailWebUri,
+          mode: LaunchMode.externalApplication,
+        )) {
+          throw Exception('تعذر فتح أي وسيلة بريد');
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'تعذر فتح البريد. جرب مرة تانية أو استخدم البريد يدويًا.',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

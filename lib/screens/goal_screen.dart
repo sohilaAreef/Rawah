@@ -53,21 +53,34 @@ class _GoalsScreenState extends State<GoalsScreen>
                   showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
-                      title: const Align(
-                        alignment: Alignment.centerRight,
-                        child: Text('عن الصفحة'),
+                      title: const Text(
+                        'عن الصفحة',
+                        textAlign: TextAlign.right,
                       ),
                       content: const Text(
                         'في هذه الصفحة يمكنك رؤية أهدافك وتتبع تقدمك فيها، سواء الأهداف النشطة أو المكتملة.',
                         textDirection: TextDirection.rtl,
                       ),
+                      actionsPadding: EdgeInsets.zero,
+                      actionsAlignment: MainAxisAlignment.center,
                       actions: [
-                        TextButton(
-                          child: const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('حسناً'),
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColors.accent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text(
+                              'حسناً',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],
                     ),

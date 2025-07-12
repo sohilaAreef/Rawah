@@ -42,6 +42,39 @@ class SelectedValuesScreen extends StatelessWidget {
           backgroundColor: AppColors.accent,
           actions: [
             IconButton(
+              icon: const Icon(Icons.info_outline, color: Colors.white),
+              tooltip: 'عن القيم',
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    title: const Text(
+                      'ما هي القيم؟',
+                      textAlign: TextAlign.right,
+                    ),
+                    content: const Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Text(
+                        'القيم هي المبادئ العميقة التي يعتنقها الإنسان وتؤثر في:\n\n'
+                        '• سلوكياته (ما يفعله).\n'
+                        '• مشاعره (ما يشعر به).',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        child: const Text('حسناً'),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            IconButton(
               icon: const Icon(Icons.edit, color: AppColors.goldenAccent),
               onPressed: () {
                 Navigator.pushReplacement(

@@ -97,11 +97,6 @@ class EmotionHistoryList extends StatelessWidget {
                 ),
               ],
             ),
-            trailing: Icon(
-              Icons.chevron_left,
-              color: AppColors.accent,
-              size: 30,
-            ),
           ),
         );
       },

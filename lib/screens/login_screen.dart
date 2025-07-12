@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rawah/screens/forgot_password_screen.dart';
 import 'package:rawah/screens/signup_screen.dart';
 import 'package:rawah/screens/home_screen.dart';
@@ -39,42 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(
           content: const Text(
             'خطأ في تسجيل الدخول! تأكد من البيانات.',
-            textAlign: TextAlign.right,
-          ),
-          backgroundColor: Colors.red[700],
-        ),
-      );
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _loginWithGoogle() async {
-    setState(() => _isLoading = true);
-
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      await _auth.signInWithCredential(credential);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-    } catch (e) {
-      print('Google login error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'فشل تسجيل الدخول عبر Google.',
             textAlign: TextAlign.right,
           ),
           backgroundColor: Colors.red[700],
@@ -169,8 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderColor: AppColors.accent,
                     ),
                     const SizedBox(height: 10),
-
-                    // الزر المعدل هنا (الأهم)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: InkWell(
@@ -194,7 +155,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 25),
                     CustomButton(
                       text: 'تسجيل الدخول',
@@ -202,28 +162,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       isLoading: _isLoading,
                       backgroundColor: AppColors.darkTeal,
                       textColor: Colors.white,
-                    ),
-
-                    const SizedBox(height: 30),
-                    Center(
-                      child: Text(
-                        'أو سجل الدخول باستخدام...',
-                        style: TextStyle(
-                          color: Colors.grey, // لون محسن
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    Center(
-                      child: IconButton(
-                        onPressed: _loginWithGoogle,
-                        icon: Icon(
-                          Icons.g_mobiledata,
-                          size: 42,
-                          color: Colors.red,
-                        ),
-                      ),
                     ),
                     const SizedBox(height: 25),
                     Center(

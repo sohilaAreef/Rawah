@@ -3,25 +3,26 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:rawah/data/motivational_messages.dart';
 import 'package:rawah/services/notification_service.dart';
 import 'package:rawah/utils/app_sounds.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rawah/utils/fcm_service.dart';
-import 'data/motivational_messages.dart';
-import 'firebase_options.dart';
-
-import 'package:rawah/logic/emotion_provider.dart';
-import 'package:rawah/logic/goal_provider.dart';
-import 'package:rawah/logic/value_provider.dart';
-import 'package:rawah/services/entry_service.dart';
-import 'package:rawah/services/goal_service.dart';
-import 'package:rawah/screens/splash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rawah/screens/onboarding_screen.dart';
+import 'package:rawah/screens/login_screen.dart';
+import 'package:rawah/screens/home_screen.dart';
 import 'package:rawah/utils/app_colors.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-
-import 'package:timezone/timezone.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'logic/emotion_provider.dart';
+import 'logic/goal_provider.dart';
+import 'logic/value_provider.dart';
+import 'services/entry_service.dart';
+import 'services/goal_service.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,52 +30,55 @@ void main() async {
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation('Africa/Cairo'));
 
-  NotificationService noti = NotificationService();
   await dotenv.load();
   await AppSounds.initForWeb();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  FirebaseFirestore.instance.settings = Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
 
-    FirebaseFirestore.instance.settings = Settings(
-      persistenceEnabled: true,
-      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-    );
+  await requestNotificationPermission();
+  await _initializeAppCheck();
 
-    await requestNotificationPermission();
-    await _initializeAppCheck();
-    await noti.init();
-    await noti.scheduleDailyReminder(
-      id: 1,
-      getMessageOfTheDay: MotivationalMessages().getMessageOfTheDay,
-    );
-    await noti.scheduleEveningReminder();
+  final noti = NotificationService();
+  await noti.init();
+  await noti.scheduleDailyReminder(
+    id: 1,
+    getMessageOfTheDay: MotivationalMessages().getMessageOfTheDay,
+  );
+  await noti.scheduleEveningReminder();
 
-    runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => ValueProvider()..loadFromFirebase(),
-          ),
-          ChangeNotifierProvider(create: (_) => EmotionProvider()),
-          Provider(create: (_) => EntryService()),
-          Provider(create: (_) => GoalService()),
-          ChangeNotifierProvider(
-            create: (context) => GoalProvider(context.read<GoalService>()),
-          ),
-        ],
-        child: const MyApp(),
-      ),
-    );
-  } catch (e) {
-    runApp(
-      MaterialApp(
-        home: Scaffold(body: Center(child: Text('فشل في تهيئة التطبيق: $e'))),
-      ),
-    );
+  final prefs = await SharedPreferences.getInstance();
+  final seenOnboarding = prefs.getBool('seenOnboarding') ?? false;
+  final user = FirebaseAuth.instance.currentUser;
+
+  late final Widget firstScreen;
+  if (!seenOnboarding) {
+    firstScreen = const OnboardingScreen();
+  } else if (user == null) {
+    firstScreen = const LoginScreen();
+  } else {
+    firstScreen = const HomeScreen(initialIndex: 4);
   }
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ValueProvider()..loadFromFirebase(),
+        ),
+        ChangeNotifierProvider(create: (_) => EmotionProvider()),
+        Provider(create: (_) => EntryService()),
+        Provider(create: (_) => GoalService()),
+        ChangeNotifierProvider(
+          create: (context) => GoalProvider(context.read<GoalService>()),
+        ),
+      ],
+      child: MyApp(startScreen: firstScreen),
+    ),
+  );
 }
 
 Future<void> _initializeAppCheck() async {
@@ -89,8 +93,18 @@ Future<void> _initializeAppCheck() async {
   }
 }
 
+Future<void> requestNotificationPermission() async {
+  final status = await Permission.notification.request();
+  if (status.isGranted) {
+    print("✅ تم منح إذن الإشعارات");
+  } else {
+    print("❌ تم رفض إذن الإشعارات");
+  }
+}
+
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget startScreen;
+  const MyApp({super.key, required this.startScreen});
 
   @override
   Widget build(BuildContext context) {
@@ -114,17 +128,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashScreen(),
+      home: startScreen,
     );
-  }
-}
-
-Future<void> requestNotificationPermission() async {
-  final status = await Permission.notification.request();
-
-  if (status.isGranted) {
-    print("✅ تم منح إذن الإشعارات");
-  } else {
-    print("❌ تم رفض إذن الإشعارات");
   }
 }

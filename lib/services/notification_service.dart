@@ -51,7 +51,7 @@ class NotificationService {
     await notificationsPlugin.zonedSchedule(
       id,
       'RAWAH',
-      '\u200F${body}',
+      '\u200F$body',
       scheduledDate,
       const NotificationDetails(
         android: AndroidNotificationDetails(

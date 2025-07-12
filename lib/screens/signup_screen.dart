@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rawah/screens/home_screen.dart';
 import 'package:rawah/screens/login_screen.dart';
@@ -94,62 +93,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'خطأ في إنشاء الحساب: ${e.toString().contains('weak-password') ? 'كلمة المرور ضعيفة' : 'تأكد من صحة البيانات'}',
-            textAlign: TextAlign.right,
-          ),
-          backgroundColor: Colors.red[700],
-        ),
-      );
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
+      String errorMessage = 'حدث خطأ أثناء إنشاء الحساب.';
 
-  Future<void> _signUpWithGoogle() async {
-    setState(() => _isLoading = true);
-
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
-
-      if (userCredential.user != null) {
-        final names = googleUser.displayName?.split(' ') ?? [];
-        final firstName = names.isNotEmpty ? names.first : '';
-        final lastName = names.length > 1 ? names.sublist(1).join(' ') : '';
-
-        await _firestore.collection('users').doc(userCredential.user!.uid).set({
-          'firstName': firstName,
-          'lastName': lastName,
-          'email': googleUser.email,
-          'phone': _phoneController.text.trim(),
-          'createdAt': FieldValue.serverTimestamp(),
-        }, SetOptions(merge: true));
+      if (e is FirebaseAuthException) {
+        if (e.code == 'email-already-in-use') {
+          errorMessage =
+              'هذا البريد مستخدم بالفعل. يبدو أنك قمت بالتسجيل من قبل.';
+        } else if (e.code == 'invalid-email') {
+          errorMessage = 'صيغة البريد غير صحيحة.';
+        } else if (e.code == 'weak-password') {
+          errorMessage = 'كلمة المرور ضعيفة.';
+        }
       }
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('فشل إنشاء الحساب عبر Google.'),
-          backgroundColor: Colors.red,
+        SnackBar(
+          content: Text(errorMessage, textAlign: TextAlign.right),
+          backgroundColor: Colors.red[700],
         ),
       );
     } finally {
@@ -287,7 +247,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       helperColor: confirmPasswordHelperColor,
                       onChanged: (value) => _checkPasswordMatch(value),
                     ),
-
                     const SizedBox(height: 30),
                     CustomButton(
                       text: 'إنشاء الحساب',
@@ -295,24 +254,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       isLoading: _isLoading,
                       backgroundColor: AppColors.darkTeal,
                       textColor: Colors.white,
-                    ),
-                    const SizedBox(height: 30),
-                    const Center(
-                      child: Text(
-                        'أو سجل باستخدام...',
-                        style: TextStyle(color: Colors.black, fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    Center(
-                      child: IconButton(
-                        onPressed: _signUpWithGoogle,
-                        icon: const Icon(
-                          Icons.g_mobiledata,
-                          size: 42,
-                          color: Colors.red,
-                        ),
-                      ),
                     ),
                     const SizedBox(height: 25),
                     Center(
